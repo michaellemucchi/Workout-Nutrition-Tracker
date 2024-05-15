@@ -1,36 +1,32 @@
-// src/components/FeatureCard.js
 import React, { useState } from 'react';
+import Modal from './Modal';
 import './FeatureCard.css';
-import { FaInfoCircle, FaTimes } from 'react-icons/fa';
 
 const FeatureCard = ({ title, description, image }) => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [showModal, setShowModal] = useState(false);
 
-  const handleCardClick = () => {
-    setIsModalOpen(true);
+  const handleModalOpen = () => {
+    setShowModal(true);
   };
 
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
+  const handleModalClose = () => {
+    setShowModal(false);
   };
 
   return (
-    <div className="card">
-      <div className="card-inner">
-        <div className="card-front" onClick={handleCardClick}>
-          <h3>{title}</h3>
-          <FaInfoCircle className="info-icon" />
-        </div>
+    <div className="feature-card">
+      <img src={image} alt={title} className="feature-card-image" />
+      <div className="feature-card-content">
+        <h3>{title}</h3>
+        <p>{description}</p>
       </div>
-      {isModalOpen && (
-        <div className="modal" onClick={handleCloseModal}>
-          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <FaTimes className="close-icon" onClick={handleCloseModal} />
-            <img src={image} alt={title} />
-            <p>{description}</p>
-          </div>
-        </div>
-      )}
+      <div className="feature-card-icon" onClick={handleModalOpen}>
+        <i className="fas fa-info-circle"></i>
+      </div>
+      <Modal show={showModal} onClose={handleModalClose}>
+        <h2>{title}</h2>
+        <p>{description}</p>
+      </Modal>
     </div>
   );
 };
