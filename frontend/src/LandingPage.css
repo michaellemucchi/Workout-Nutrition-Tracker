@@ -1,0 +1,10 @@
+.landing-page {
+  text-align: center;
+  padding: 50px;
+}
+
+.features {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+}
