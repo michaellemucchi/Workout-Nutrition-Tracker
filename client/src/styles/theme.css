@@ -1,0 +1,15 @@
+:root {
+    --primary-color: #6a1b9a; /* Beautiful purple */
+    --accent1-color: #ffccbc; /* Light red for accents */
+    --accent2-color: #b2ff59; /* Lime green for additional accents */
+    --text-color: #333;       /* Main text color */
+    --background-color: #fff; /* Background color */
+  }
+  
+  body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    color: var(--text-color);
+    background-color: var(--background-color);
+  }
+  
