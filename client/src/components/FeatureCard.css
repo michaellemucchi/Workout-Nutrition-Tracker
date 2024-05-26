@@ -10,8 +10,6 @@
   justify-content: center;
 }
 
-
-
 .feature {
   display: flex;
   padding: 20px; 
@@ -31,17 +29,18 @@
 
 
 .info-button, .close-button {
+  padding: 4px 6px;
+  border-radius: 50%;
   border: none;
   color: white;
   cursor: pointer;
   background-color: var(--primary-color);
   transition: background-color 0.2s;
-  border-radius: 50%;
 }
 
 .info-button img, .close-button img {
-  width: 30px;
-  height: 30px;
+  width: 2rem; 
+  height: 2rem;
 }
 
 .close-button {
@@ -70,7 +69,6 @@
 }
 
 
-
 .info-button:hover, .close-button:hover {
-  background-color: var(--accent1-color); /* Color shift on hover */
+  background-color: var(--accent1-color); 
 }

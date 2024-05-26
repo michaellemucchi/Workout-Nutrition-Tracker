@@ -1,0 +1,12 @@
+footer {
+    background: linear-gradient(135deg, var(--primary-color) 30%, var(--accent2-color) 100%);
+    color: white;
+    padding: 5px 0;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    font-size: 12px;
+    display: flex;
+    height: 3.5rem;
+  }
+  

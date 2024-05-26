@@ -1,5 +1,7 @@
 import React from 'react';
 import NavBar from '../components/NavBar';
+import Footer from '../components/Footer';
+
 import './LandingPage.css'; 
 import chart from '../images/chart.jpg';
 import FeatureCard from '../components/FeatureCard';
@@ -7,6 +9,8 @@ import nutrition from '../images/nutrition.png';
 import exercise from '../images/exercise.png';
 import analytics from '../images/analytics.png';
 import key from '../images/key.png';
+
+
 const features = [
   { id: 1, title: "Nutrition", description: "Description for Feature 1", image: nutrition },
   { id: 2, title: "Workouts", description: "Description for Feature 2", image: exercise },
@@ -62,10 +66,8 @@ const LandingPage = () => {
         </div>
       </div>
       
-      <footer>
+      <Footer />
 
-      </footer>
-      
     </div>
   );
 };

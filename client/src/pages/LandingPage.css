@@ -72,9 +72,10 @@
 }
   
 .feature-section {
-  background: linear-gradient(180deg, white, lightgrey); /* Updated to use a gradient background */
+  background: #fff; 
   padding: 2rem;
   text-align: center;
+  margin-bottom: 2rem;
 }
 
 .feature-section h2 {
