@@ -31,7 +31,7 @@ router.post('/register/initiate', [
   const { username, password, dateOfBirth } = req.body;
   try {
     const hashedPassword = await bcrypt.hash(password, 8);
-    db.run('INSERT INTO users (username, password, date_of_birth) VALUES (?, ?, ?)', [
+    await db.run('INSERT INTO users (username, password, date_of_birth) VALUES (?, ?, ?)', [
       username, hashedPassword, dateOfBirth
     ], function(err) {
       if (err) {
@@ -59,7 +59,7 @@ router.post('/register/complete', [
 
   const { userId, bio, fitnessGoals } = req.body;
   try {
-    db.run('UPDATE users SET bio = ?, fitness_goals = ? WHERE id = ?', [bio, fitnessGoals, userId]);
+    await db.run('UPDATE users SET bio = ?, fitness_goals = ? WHERE id = ?', [bio, fitnessGoals, userId]);
     res.status(200).json({ message: 'Profile completed successfully'});
   } catch (err) {
     res.status(500).send({ error: 'Internal server error. Please try again later.' });
@@ -69,13 +69,18 @@ router.post('/register/complete', [
 
 
 
-/**
- * Login a user.
- */
+// Login a user.
 router.post('/login', async (req, res) => {
   const { username, password } = req.body;
+
+  if (!username || !password) {
+    return res.status(400).send({ error: 'Username and password are required.' });
+  }
+    
   try {
-      const user = await db.get('SELECT id, username, password FROM users WHERE username = ?', [username]);
+      const user = await db.get('SELECT id, password FROM users WHERE username = ?', [username]);
+      console.log('User found:', user); // Debug: Log the user object to see what is returned
+
       if (!user) {
           return res.status(401).send({ error: 'Login failed! Incorrect Username' });
       }

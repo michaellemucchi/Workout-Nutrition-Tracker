@@ -18,27 +18,27 @@ const Login = () => {
     };
 
     const handleSubmit = async (event) => {
-    event.preventDefault();
-    try {
-        const response = await fetch(`http://localhost:3000/api/users/login`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-            username: userInfo.username,
-            password: userInfo.password,
-        })
-        });
-
-        const data = await response.json();
-        if (response.ok) {
-            setUserInfo(...userInfo, { userId: data.userId, username: data.username, token: data.token });
-            window.location.href = '/dashboard';
-        } else {
-            throw new Error(data.errors ? data.errors.map(err => err.msg).join(', ') : data.error);
+        event.preventDefault();
+        try {
+            const response = await fetch(`http://localhost:3000/api/users/login`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                username: userInfo.username,
+                password: userInfo.password,
+            })
+            });
+            
+            const data = await response.json();
+            if (response.ok) {
+                setUserInfo({...userInfo,  userId: data.userId, username: data.username, token: data.token });
+                window.location.href = '/dashboard';
+            } else {
+                throw new Error(data.error || 'An error occurred during login.');
+            }
+        } catch (err) {
+            setError(err.message);
         }
-    } catch (err) {
-        setError(err.message);
-    }
     };
 
     return (
