@@ -4,43 +4,71 @@ const { check, validationResult } = require('express-validator');
 const db = require('../database');
 const { generateToken } = require('../utils/jwtHelper');
 const authenticate = require('../middlewares/authenticate');
+const moment = require('moment'); // Moment.js for easy date manipulation
 
 const router = express.Router();
 
-/**
- * Register a new user.
- */
-router.post('/register', [
+// Register a new user.
+router.post('/register/initiate', [
   check('username').isLength({ min: 5 }).withMessage('Username must be at least 5 characters long'),
   check('password').isLength({ min: 5 }).withMessage('Password must be at least 5 characters long'),
+  check('dateOfBirth').custom(value => {
+    const date = moment(value, 'YYYY-MM-DD', true);
+    if (!date.isValid()) {
+      throw new Error('Date of Birth is not valid.');
+    }
+    if (moment().diff(date, 'years') < 13) {
+      throw new Error('You must be at least 13 years old.');
+    }
+    return true;
+  })
 ], async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
   }
 
-  const { username, password, bio, fitness_goals, date_of_birth } = req.body;
+  const { username, password, dateOfBirth } = req.body;
   try {
+    // Check if the username already exists
+    const existingUser = await db.get('SELECT id FROM users WHERE username = ?', [username]);
+    console.log(existingUser); // Check what this logs
+    if (existingUser && existingUser.id) {
+      return res.status(400).json({ error: 'Username is already taken.' });
+    }
+
     const hashedPassword = await bcrypt.hash(password, 8);
-    db.run(`INSERT INTO users (username, password, bio, fitness_goals, date_of_birth) VALUES (?, ?, ?, ?, ?)`, 
-      [username, hashedPassword, bio, fitness_goals, date_of_birth], function(err) {
-        if (err) {
-          return res.status(400).send({ error: 'Username is already taken.' });
-        }
-        const user = {
-          id: this.lastID,
-          username,
-          bio,
-          fitness_goals,
-          date_of_birth
-        };
-        const token = generateToken(user.id);
-        res.status(201).send({ user, token });
-    });
+    await db.run('INSERT INTO users (username, password, date_of_birth) VALUES (?, ?, ?)', [
+      username, hashedPassword, dateOfBirth
+    ]);
+    res.status(201).json({ message: 'User registered. Please complete your profile.' });
   } catch (err) {
     res.status(500).send({ error: 'Internal server error. Please try again later.' });
   }
 });
+
+
+router.post('/register/complete', [
+  check('userId').notEmpty().withMessage('User ID is required'),
+  check('bio').notEmpty().withMessage('Bio cannot be empty'),
+  check('fitnessGoals').notEmpty().withMessage('Fitness goals cannot be empty')
+], async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+
+  const { userId, bio, fitnessGoals } = req.body;
+  try {
+    await db.run('UPDATE users SET bio = ?, fitness_goals = ? WHERE id = ?', [bio, fitnessGoals, userId]);
+    res.status(200).json({ message: 'Profile completed successfully' });
+  } catch (err) {
+    res.status(500).send({ error: 'Internal server error. Please try again later.' });
+  }
+});
+
+
+
 
 /**
  * Login a user.
@@ -141,7 +169,7 @@ router.delete('/delete/:id', authenticate, async (req, res) => {
 /**
  * Get all users.
  */
-router.get('/', (req, res) => {
+router.get('/', async (req, res) => {
   db.all(`SELECT * FROM users`, [], (err, rows) => {
     if (err) {
       return res.status(500).send({ error: 'Failed to retrieve users. Please try again later.' });

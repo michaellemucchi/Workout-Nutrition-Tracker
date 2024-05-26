@@ -1,3 +1,11 @@
+.error {
+    margin: auto;
+    color: red;  /* Makes the error message red */
+    font-size: 1.2rem;  /* Makes the text slightly larger */
+    border: 1px solid red;
+    padding: 5px;
+    border-radius: 10px;
+  }
 
 .register-form {
     margin: auto;
@@ -24,6 +32,16 @@
     border-radius: 5px; 
     outline: none; 
     height: 30px;
+    width: 200px;
+}
+
+.register-form label > textarea {
+    margin-left: 20px;
+    border: 2px solid var(--primary-color); 
+    border-radius: 5px; 
+    outline: none; 
+    height: 30px;
+    transform: translateY(10px) ;
 }
 
 .register-form label {
@@ -32,7 +50,6 @@
     font-weight: bold;
     font-size: 1.5rem;
 }
-
 
 .register-form button {
     margin: auto;
