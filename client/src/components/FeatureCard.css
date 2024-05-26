@@ -1,0 +1,68 @@
+.feature-card {
+  background: white;
+  border-radius: 30px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 1rem;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.feature {
+  display: flex;
+  padding: 20px; 
+}
+.feature-image {
+  width: 100px;
+  height: 100px;
+  border: 2px solid var(--primary-color);
+  border-radius: 30px;
+  margin-right: 20px;
+}
+
+.feature h3 {
+  font-size: 2rem;
+}
+
+
+.info-button {
+  background-color: var(--primary-color);
+  border: none;
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 20;
+}
+
+.popup {
+  background: white;
+  height: 300px;
+  width: 500px;
+  border-radius: 10px;
+}
+
+.close-button {
+  margin-left: 400px;
+  margin-top: 20px;
+  padding: 0.5rem 1rem;
+  background: var(--accent2-color);
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
