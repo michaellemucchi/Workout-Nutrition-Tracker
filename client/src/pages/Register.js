@@ -7,6 +7,7 @@ const Register = () => {
   const [step, setStep] = useState(1); // Step 1 for initial registration, Step 2 for additional information
 
   const [userInfo, setUserInfo] = useState({
+    userId: '',
     username: '',
     password: '',
     dateOfBirth: '',
@@ -15,6 +16,8 @@ const Register = () => {
   });
 
   const [error, setError] = useState('');
+
+  const [message, setMessage] = useState('');
 
   const handleChange = (event) => {
     setUserInfo({ ...userInfo, [event.target.name]: event.target.value });
@@ -34,13 +37,15 @@ const Register = () => {
       });
   
       const data = await response.json();
-      if (!response.ok) {
+      if (response.ok) {
+        const updatedInfo = { ...userInfo, userId: data.userId };
+        setMessage(data.message);
+        setUserInfo(updatedInfo);
+        setStep(2);
+        setError('');
+      } else {
         throw new Error(data.errors ? data.errors.map(err => err.msg).join(', ') : data.error);
       }
-  
-      setUserInfo({ ...userInfo, userId: data.userId });
-      setStep(2);
-      setError('');
     } catch (err) {
       setError(err.message);
     }
@@ -61,16 +66,17 @@ const Register = () => {
       });
   
       const data = await response.json();
+
       if (response.ok) {
-        window.location.href = '/login'; // Redirect to login on successful profile update
+        window.location.href = '/login';
       } else {
-          throw new Error(data.errors.map(err => err.msg).join(', '));
+          setMessage('');
+          throw new Error(data.errors ? data.errors.map(err => err.msg).join(', ') : data.error);
       }
     } catch (err) {
       setError(err.message);
     }
   };
-
 
 
   return (
@@ -96,6 +102,7 @@ const Register = () => {
         </form>
       ) : (
         <form onSubmit={handleSecondPartSubmit} className="register-form">
+          {message && <p className="message">{message}</p>}
           <h2>Complete Your Profile</h2>
           {error && <p className="error">{error}</p>}
           <label>

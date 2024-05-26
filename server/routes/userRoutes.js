@@ -30,18 +30,17 @@ router.post('/register/initiate', [
 
   const { username, password, dateOfBirth } = req.body;
   try {
-    // Check if the username already exists
-    const existingUser = await db.get('SELECT id FROM users WHERE username = ?', [username]);
-    console.log(existingUser); // Check what this logs
-    if (existingUser && existingUser.id) {
-      return res.status(400).json({ error: 'Username is already taken.' });
-    }
-
     const hashedPassword = await bcrypt.hash(password, 8);
-    await db.run('INSERT INTO users (username, password, date_of_birth) VALUES (?, ?, ?)', [
+    db.run('INSERT INTO users (username, password, date_of_birth) VALUES (?, ?, ?)', [
       username, hashedPassword, dateOfBirth
-    ]);
-    res.status(201).json({ message: 'User registered. Please complete your profile.' });
+    ], function(err) {
+      if (err) {
+        res.status(400).send({ error: 'Username is already taken.' });
+      } else {
+        // Here we use `this.lastID` to get the ID of the newly created user
+        res.status(201).json({ message: 'User registered. Please complete your profile.', userId: this.lastID });
+      }
+    });
   } catch (err) {
     res.status(500).send({ error: 'Internal server error. Please try again later.' });
   }
@@ -60,8 +59,8 @@ router.post('/register/complete', [
 
   const { userId, bio, fitnessGoals } = req.body;
   try {
-    await db.run('UPDATE users SET bio = ?, fitness_goals = ? WHERE id = ?', [bio, fitnessGoals, userId]);
-    res.status(200).json({ message: 'Profile completed successfully' });
+    db.run('UPDATE users SET bio = ?, fitness_goals = ? WHERE id = ?', [bio, fitnessGoals, userId]);
+    res.status(200).json({ message: 'Profile completed successfully'});
   } catch (err) {
     res.status(500).send({ error: 'Internal server error. Please try again later.' });
   }
@@ -73,28 +72,31 @@ router.post('/register/complete', [
 /**
  * Login a user.
  */
-router.post('/login', (req, res) => {
+router.post('/login', async (req, res) => {
   const { username, password } = req.body;
-  db.get(`SELECT * FROM users WHERE username = ?`, [username], async (err, user) => {
-    if (err) {
-      return res.status(500).send({ error: 'Internal server error. Please try again later.' });
-    }
-    if (!user) {
-      return res.status(401).send({ error: 'Login failed! Check authentication credentials.' });
-    }
-    try {
+  try {
+      const user = await db.get('SELECT id, username, password FROM users WHERE username = ?', [username]);
+      if (!user) {
+          return res.status(401).send({ error: 'Login failed! Incorrect Username' });
+      }
+
       const isMatch = await bcrypt.compare(password, user.password);
       if (!isMatch) {
-        return res.status(401).send({ error: 'Login failed! Check authentication credentials.' });
+          return res.status(401).send({ error: 'Login failed! Incorrect Password.' });
       }
-      const { password: _, ...userWithoutPassword } = user; // Exclude password from user object
+
       const token = generateToken(user.id);
-      res.send({ user: userWithoutPassword, token });
-    } catch (error) {
+
+      res.status(200).json({
+          userId: user.id,
+          username: user.username,
+          token: token
+      });
+  } catch (error) {
       res.status(500).send({ error: 'Internal server error. Please try again later.' });
-    }
-  });
+  }
 });
+
 
 /**
  * Get authenticated user profile.

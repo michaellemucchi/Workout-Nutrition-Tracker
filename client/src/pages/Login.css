@@ -7,16 +7,7 @@
     border-radius: 10px;
   }
 
-.message {
-    margin: auto;
-    color: green;  /* Makes the error message red */
-    font-size: 1.2rem;  /* Makes the text slightly larger */
-    border: 1px solid green;
-    padding: 5px;
-    border-radius: 10px;
-}
-
-.register-form {
+.login-form {
     margin: auto;
     margin-top: 15%;
     width: 400px;
@@ -29,13 +20,13 @@
     color: white;
 }
 
-.register-form h2 {
+.login-form h2 {
     font-size: 2rem;
     margin: auto;
     margin-bottom: 10px;
 }
 
-.register-form label > input {
+.login-form label > input {
     margin-left: 20px;
     border: 2px solid var(--primary-color); 
     border-radius: 5px; 
@@ -44,23 +35,15 @@
     width: 200px;
 }
 
-.register-form label > textarea {
-    margin-left: 20px;
-    border: 2px solid var(--primary-color); 
-    border-radius: 5px; 
-    outline: none; 
-    height: 30px;
-    transform: translateY(10px) ;
-}
 
-.register-form label {
+.login-form label {
     display: block;
     margin-top: 20px;
     font-weight: bold;
     font-size: 1.5rem;
 }
 
-.register-form button {
+.login-form button {
     margin: auto;
     margin-top: 20px;
     padding: 10px;
@@ -73,7 +56,7 @@
     transition: all 0.3s ease; 
 }
 
-.register-form button:hover {
+.login-form button:hover {
     background-color: var(--primary-color); 
     transform: scale(1.1); 
 }
