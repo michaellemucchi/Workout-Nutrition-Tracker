@@ -62,8 +62,10 @@ const LandingPage = () => {
         </div>
       </div>
       
-      {/*add footer (probably use component) */}
+      <footer>
 
+      </footer>
+      
     </div>
   );
 };

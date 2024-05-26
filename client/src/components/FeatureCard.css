@@ -10,6 +10,8 @@
   justify-content: center;
 }
 
+
+
 .feature {
   display: flex;
   padding: 20px; 
@@ -24,16 +26,27 @@
 
 .feature h3 {
   font-size: 2rem;
+  margin: 10px 0 0 0;
 }
 
 
-.info-button {
-  background-color: var(--primary-color);
+.info-button, .close-button {
   border: none;
   color: white;
-  padding: 0.5rem 1rem;
-  border-radius: 5px;
   cursor: pointer;
+  background-color: var(--primary-color);
+  transition: background-color 0.2s;
+  border-radius: 50%;
+}
+
+.info-button img, .close-button img {
+  width: 30px;
+  height: 30px;
+}
+
+.close-button {
+  margin-left: 400px;
+  margin-top: 20px;
 }
 
 .popup-overlay {
@@ -56,13 +69,8 @@
   border-radius: 10px;
 }
 
-.close-button {
-  margin-left: 400px;
-  margin-top: 20px;
-  padding: 0.5rem 1rem;
-  background: var(--accent2-color);
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
+
+
+.info-button:hover, .close-button:hover {
+  background-color: var(--accent1-color); /* Color shift on hover */
 }

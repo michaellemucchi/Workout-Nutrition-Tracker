@@ -72,7 +72,7 @@
 }
   
 .feature-section {
-  background: #f0f0f0;  
+  background: linear-gradient(180deg, white, lightgrey); /* Updated to use a gradient background */
   padding: 2rem;
   text-align: center;
 }
