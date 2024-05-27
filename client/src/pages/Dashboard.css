@@ -1,3 +1,7 @@
-.please-login {
-    
+.dashboard-unauthorized {
+    display: grid;
+    place-content: center;
+    padding-top: 10%;
+    font-size: 5rem;
+    color: red;
 }
