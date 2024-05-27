@@ -64,9 +64,7 @@ const Register = () => {
           fitnessGoals: userInfo.fitnessGoals
         })
       });
-  
       const data = await response.json();
-
       if (response.ok) {
         window.location.href = '/login';
       } else {

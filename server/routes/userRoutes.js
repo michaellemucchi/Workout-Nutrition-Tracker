@@ -1,7 +1,7 @@
 const express = require('express');
 const bcrypt = require('bcryptjs');
 const { check, validationResult } = require('express-validator');
-const db = require('../database');
+const {runAsync, getAsync, allAsync, db} = require('../database');
 const { generateToken } = require('../utils/jwtHelper');
 const authenticate = require('../middlewares/authenticate');
 const moment = require('moment'); // Moment.js for easy date manipulation
@@ -31,18 +31,15 @@ router.post('/register/initiate', [
   const { username, password, dateOfBirth } = req.body;
   try {
     const hashedPassword = await bcrypt.hash(password, 8);
-    await db.run('INSERT INTO users (username, password, date_of_birth) VALUES (?, ?, ?)', [
-      username, hashedPassword, dateOfBirth
-    ], function(err) {
-      if (err) {
-        res.status(400).send({ error: 'Username is already taken.' });
-      } else {
-        // Here we use `this.lastID` to get the ID of the newly created user
-        res.status(201).json({ message: 'User registered. Please complete your profile.', userId: this.lastID });
-      }
-    });
+    const result = await runAsync('INSERT INTO users (username, password, date_of_birth) VALUES (?, ?, ?)', [username, hashedPassword, dateOfBirth]);
+    res.status(201).json({ message: 'User registered. Please complete your profile.', userId: result.lastID });
   } catch (err) {
-    res.status(500).send({ error: 'Internal server error. Please try again later.' });
+    if (err.code === 'SQLITE_CONSTRAINT') {
+      res.status(409).send({ error: 'Username is already taken.' });
+    } else {
+      console.error(err); // Log full error
+      res.status(500).send({ error: 'Internal server error. Please try again later.' });
+    }
   }
 });
 
@@ -56,16 +53,15 @@ router.post('/register/complete', [
   if (!errors.isEmpty()) {
     return res.status(400).json({ errors: errors.array() });
   }
-
   const { userId, bio, fitnessGoals } = req.body;
   try {
-    await db.run('UPDATE users SET bio = ?, fitness_goals = ? WHERE id = ?', [bio, fitnessGoals, userId]);
+    await runAsync('UPDATE users SET bio = ?, fitness_goals = ? WHERE id = ?', [bio, fitnessGoals, userId]);
     res.status(200).json({ message: 'Profile completed successfully'});
   } catch (err) {
+    console.error('Update error:', err.message); // Logging the specific error can help in debugging
     res.status(500).send({ error: 'Internal server error. Please try again later.' });
   }
 });
-
 
 
 
@@ -76,11 +72,10 @@ router.post('/login', async (req, res) => {
   if (!username || !password) {
     return res.status(400).send({ error: 'Username and password are required.' });
   }
-    
-  try {
-      const user = await db.get('SELECT id, password FROM users WHERE username = ?', [username]);
-      console.log('User found:', user); // Debug: Log the user object to see what is returned
 
+  try {
+      const user = await getAsync('SELECT id, username, password FROM users WHERE username = ?', [username]);
+  
       if (!user) {
           return res.status(401).send({ error: 'Login failed! Incorrect Username' });
       }
@@ -90,8 +85,8 @@ router.post('/login', async (req, res) => {
           return res.status(401).send({ error: 'Login failed! Incorrect Password.' });
       }
 
+      
       const token = generateToken(user.id);
-
       res.status(200).json({
           userId: user.id,
           username: user.username,
@@ -173,16 +168,15 @@ router.delete('/delete/:id', authenticate, async (req, res) => {
   });
 });
 
-/**
- * Get all users.
- */
+// Get all users using promisified function.
 router.get('/', async (req, res) => {
-  db.all(`SELECT * FROM users`, [], (err, rows) => {
-    if (err) {
-      return res.status(500).send({ error: 'Failed to retrieve users. Please try again later.' });
-    }
+  try {
+    const rows = await allAsync(`SELECT * FROM users`);
     res.status(200).json(rows);
-  });
+  } catch (err) {
+    res.status(500).send({ error: 'Failed to retrieve users. Please try again later.', details: err.message });
+  }
 });
+
 
 module.exports = router;

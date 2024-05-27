@@ -1,4 +1,6 @@
 const sqlite3 = require('sqlite3').verbose();
+const { promisify } = require('util');
+
 
 const db = new sqlite3.Database('./database.sqlite', (err) => {
   if (err) {
@@ -13,6 +15,22 @@ const db = new sqlite3.Database('./database.sqlite', (err) => {
     });
   }
 });
+
+function runAsync(sql, params = []) {
+  return new Promise((resolve, reject) => {
+      db.run(sql, params, function(err) {  // 'function' keyword is crucial here
+          if (err) {
+              reject(err);
+          } else {
+              resolve(this);  // 'this' contains lastID and lastRow information
+          }
+      });
+  });
+}
+
+const getAsync = promisify(db.get.bind(db)); 
+const allAsync = promisify(db.all.bind(db));
+
 
 async function initializeDB() {
   try {
@@ -75,4 +93,4 @@ function createTable(sql) {
   });
 }
 
-module.exports = db;
+module.exports = { runAsync, getAsync, allAsync, db};
