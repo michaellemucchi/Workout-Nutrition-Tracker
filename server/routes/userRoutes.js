@@ -168,7 +168,8 @@ router.delete('/delete/:id', authenticate, async (req, res) => {
   });
 });
 
-// Get all users using promisified function.
+
+// Get all users 
 router.get('/', async (req, res) => {
   try {
     const rows = await allAsync(`SELECT * FROM users`);

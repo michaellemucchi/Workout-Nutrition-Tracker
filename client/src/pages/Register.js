@@ -2,10 +2,11 @@ import React, { useState } from 'react';
 import './Register.css'; 
 import Navbar from '../components/NavBar';
 import Footer from '../components/Footer';
+import { useNavigate } from 'react-router-dom';
 
 const Register = () => {
   const [step, setStep] = useState(1); // Step 1 for initial registration, Step 2 for additional information
-
+  const navigate = useNavigate();
   const [userInfo, setUserInfo] = useState({
     userId: '',
     username: '',
@@ -66,7 +67,7 @@ const Register = () => {
       });
       const data = await response.json();
       if (response.ok) {
-        window.location.href = '/login';
+        navigate('/login');
       } else {
           setMessage('');
           throw new Error(data.errors ? data.errors.map(err => err.msg).join(', ') : data.error);

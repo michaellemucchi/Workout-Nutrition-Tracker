@@ -1,9 +1,16 @@
 import Footer from "../components/Footer";
 import Navbar from "../components/NavBar";
-import { useState } from "react";
+import React, { useState } from "react";
 import './Login.css';
+import { useUser } from '../context/UserContext'; // Ensure this import is correct
+import { useNavigate } from 'react-router-dom';
+
 
 const Login = () => {
+    const { setUser } = useUser();
+    const navigate = useNavigate();
+
+
     const [userInfo, setUserInfo] = useState({
         userId: '',
         token: '',
@@ -31,8 +38,8 @@ const Login = () => {
             
             const data = await response.json();
             if (response.ok) {
-                setUserInfo({...userInfo,  userId: data.userId, username: data.username, token: data.token });
-                window.location.href = '/dashboard';
+                setUser({ userId: data.userId, username: data.username, token: data.token });
+                navigate('/dashboard');
             } else {
                 throw new Error(data.error || 'An error occurred during login.');
             }
