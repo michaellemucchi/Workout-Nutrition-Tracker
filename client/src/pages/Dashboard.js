@@ -3,6 +3,9 @@ import { useUser } from '../context/UserContext';
 import './Dashboard.css'; 
 import Navbar from '../components/NavBar';
 import Footer from '../components/Footer';
+import DashboardNav from '../components/DashboardNav';
+import { Outlet } from 'react-router-dom';
+
 
 const Dashboard = () => {
     const { user } = useUser();
@@ -19,9 +22,11 @@ const Dashboard = () => {
 
     // Your dashboard content for logged-in users
     return (
-        <div className="dashboard">
-            <div>Welcome to your dashboard, {user.username}!</div>
-            {/* Additional dashboard components here */}
+        <div className="viewport">
+            <div className="dashboard-container">
+                <DashboardNav />
+                <Outlet />
+            </div>
         </div>
     );
 };

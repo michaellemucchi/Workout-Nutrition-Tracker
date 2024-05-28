@@ -1,0 +1,63 @@
+.dashboard-nav {
+    position: inherit; 
+    top: 0;
+    left: 0;
+    width: 15%; 
+    height: 100%; 
+    background-color: #140D24; /* Dark background with a hint of purple */
+    color: white;
+    display: flex;
+    flex-direction: column; 
+    align-items: center;
+}
+
+.dashnav-item {
+    width: 80%; /* Control the width within the nav */
+    margin: 10px 0;
+    padding: 10px; /* Adequate padding */
+    border-radius: 10px; /* Rounded corners for a softer look */
+    background-color: var(--primary-color); /* Use theme primary color */
+    display: flex;
+    align-items: center;
+    justify-content: center; /* Center content within the button */
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+.dashnav-item:hover {
+    background-color: var(--accent2-color); /* Highlight on hover with accent color */
+    transform: scale(1.05); /* Slight enlargement on hover */
+    cursor: pointer;
+}
+
+.dashnav-item img {
+    margin-right: 8px; /* Space between icon and text */
+    width: 24px; /* Adjusted icon size */
+    height: 24px; /* Keep the icons squared */
+}
+
+.dashnav-text {
+    flex-grow: 1; /* Ensures text takes the available space */
+}
+
+.logout-button {
+    margin-top: auto; /* Pushes to the bottom */
+    background-color: #444; /* Slightly different for logout */
+}
+
+.title-container {
+    width: 100%; /* Full width */
+    display: flex;
+    align-items: center;
+    justify-content: center; /* Center title and icon horizontally */
+    margin-bottom: 20px; /* Space from the navigation items */
+}
+
+.title-container img {
+    width: 40px; /* Larger size for visibility */
+    height: 40px;
+    margin-right: 10px; /* Space between icon and title */
+}
+
+.title-container h2 {
+    color: #FFFFFF; /* Bright color for title */
+}
