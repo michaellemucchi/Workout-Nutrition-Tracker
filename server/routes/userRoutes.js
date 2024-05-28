@@ -1,7 +1,7 @@
 const express = require('express');
 const bcrypt = require('bcryptjs');
 const { check, validationResult } = require('express-validator');
-const {runAsync, getAsync, allAsync, db} = require('../database');
+const {runAsync, getAsync, allAsync} = require('../database');
 const { generateToken } = require('../utils/jwtHelper');
 const authenticate = require('../middlewares/authenticate');
 const moment = require('moment'); // Moment.js for easy date manipulation
@@ -98,21 +98,21 @@ router.post('/login', async (req, res) => {
 });
 
 
-/**
- * Get authenticated user profile.
- */
-router.get('/profile', authenticate, (req, res) => {
+
+// Get authenticated user profile.
+router.get('/profile', authenticate, async (req, res) => {
   const userId = req.user.id;
-  db.get('SELECT * FROM users WHERE id = ?', [userId], (err, user) => {
-    if (err) {
-      return res.status(500).send({ error: 'Failed to retrieve user profile. Please try again later.' });
-    }
+  try {
+    const user = await getAsync('SELECT * FROM users WHERE id = ?', [userId]);
     if (!user) {
       return res.status(404).send({ error: 'User not found.' });
     }
     const { password, ...userWithoutPassword } = user;
     res.status(200).json(userWithoutPassword);
-  });
+  } catch (error) {
+    console.error('Error retrieving user profile:', error);
+    res.status(500).send({ error: 'Failed to retrieve user profile. Please try again later.' });
+  }
 });
 
 /**

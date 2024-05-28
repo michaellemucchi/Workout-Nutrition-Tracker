@@ -1,0 +1,26 @@
+.profile-container {
+    display: flex;
+    justify-content: space-between;
+    padding: 20px;
+}
+
+.profile-header {
+    flex: 1;
+    align-items: center;
+}
+
+.profile-details {
+    flex: 2;
+    display: flex;
+    justify-content: space-around;
+}
+
+.profile-stats, .profile-settings {
+    display: flex;
+    flex-direction: column;
+}
+
+button {
+    padding: 10px;
+    margin-top: 10px;
+}

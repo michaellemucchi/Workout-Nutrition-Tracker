@@ -7,7 +7,7 @@ import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import Nutrition from './components/Nutrition';  
 import Workouts from './components/Workouts';   
-import Settings from './components/Settings';    
+import Profile from './components/Profile';    
 import MainDash from './components/MainDash';
 
 function App() {
@@ -22,7 +22,7 @@ function App() {
             <Route index element={<MainDash />} />
             <Route path="nutrition" element={<Nutrition />} />
             <Route path="workouts" element={<Workouts />} />
-            <Route path="settings" element={<Settings />} />
+            <Route path="profile" element={<Profile />} />
           </Route>
         </Routes>
       </Router>
