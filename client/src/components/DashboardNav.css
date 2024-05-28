@@ -4,60 +4,70 @@
     left: 0;
     width: 15%; 
     height: 100%; 
-    background-color: #140D24; /* Dark background with a hint of purple */
+    background-color: var(--accent3-color); 
     color: white;
     display: flex;
     flex-direction: column; 
     align-items: center;
+    border-top-left-radius: 35px; 
+    border-bottom-left-radius: 35px; 
 }
 
 .dashnav-item {
-    width: 80%; /* Control the width within the nav */
-    margin: 10px 0;
-    padding: 10px; /* Adequate padding */
-    border-radius: 10px; /* Rounded corners for a softer look */
-    background-color: var(--primary-color); /* Use theme primary color */
+    width: 75%;
+    margin: 10px;
+    padding: 10px;
+    border-radius: 15px; 
+    background-color: var(--primary-color); 
+    border: 1px solid white; /* Added white border */
     display: flex;
     align-items: center;
-    justify-content: center; /* Center content within the button */
+    justify-content: space-between; /* Adjusted for centering content */
     transition: background-color 0.3s, transform 0.3s;
 }
 
+
 .dashnav-item:hover {
-    background-color: var(--accent2-color); /* Highlight on hover with accent color */
-    transform: scale(1.05); /* Slight enlargement on hover */
+    background-color: var(--accent2-color); 
+    transform: scale(1.05);
     cursor: pointer;
 }
 
 .dashnav-item img {
-    margin-right: 8px; /* Space between icon and text */
-    width: 24px; /* Adjusted icon size */
-    height: 24px; /* Keep the icons squared */
+    margin-right: 8px; 
+    width: 30px; 
+    height: 30px;
 }
 
 .dashnav-text {
-    flex-grow: 1; /* Ensures text takes the available space */
+    flex-grow: 1;
+    text-align: center; /* Centering text */
 }
 
 .logout-button {
-    margin-top: auto; /* Pushes to the bottom */
-    background-color: #444; /* Slightly different for logout */
+    margin-top: auto; 
+    margin-bottom: 30px;
+    background-color: #444;
+    text-align: center;
+    font-size: 23px;
+    width: 60%;
+    border: 1px solid white; /* Added white border for logout */
+}
+
+.logout-button:hover {
+    background-color: red;
 }
 
 .title-container {
-    width: 100%; /* Full width */
     display: flex;
     align-items: center;
-    justify-content: center; /* Center title and icon horizontally */
-    margin-bottom: 20px; /* Space from the navigation items */
+    justify-content: center;
+    margin-top: 20px;
+    margin-bottom: 20px;
 }
 
 .title-container img {
-    width: 40px; /* Larger size for visibility */
+    width: 40px;
     height: 40px;
-    margin-right: 10px; /* Space between icon and title */
-}
-
-.title-container h2 {
-    color: #FFFFFF; /* Bright color for title */
+    margin-right: 10px; 
 }

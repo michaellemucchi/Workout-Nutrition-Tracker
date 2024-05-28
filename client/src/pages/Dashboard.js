@@ -14,7 +14,7 @@ const Dashboard = () => {
         return (
             <div>
                 <Navbar/>
-                <p className="dashboard-unauthorized">Please log in</p>
+                <p className="dashboard-unauthorized">Please log back in</p>
                 <Footer/>
             </div>
         );
