@@ -5,9 +5,9 @@ import Loader from '../components/Loader';
 
 const Profile = () => {
     const { user } = useUser();
-    const [error, setError] = useState('');
     const [profile, setProfile] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState('');
 
     useEffect(() => {
         const fetchProfile = async () => {
@@ -21,10 +21,10 @@ const Profile = () => {
                 const data = await response.json();
                 if (response.ok) {
                     setProfile(data);
+                    setLoading(false);
                 } else {
                     throw new Error('Failed to fetch profile');
                 }
-                setLoading(false);
             } catch (err) {
                 setError(err.message);
                 setLoading(false);
@@ -42,6 +42,9 @@ const Profile = () => {
             <div className="profile-sidebar">
                 <img src={person} alt="Profile" />
                 <h2>{profile.username}</h2>
+                <p>Meals Logged: {profile.mealsLogged}</p>
+                <p>Workouts Logged: {profile.workoutsLogged}</p>
+                <p>Account Age: {profile.accountAge} days</p>
                 
                 {/* Add other user info and stats */}
             </div>

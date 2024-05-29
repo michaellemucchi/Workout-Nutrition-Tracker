@@ -103,21 +103,33 @@ router.post('/login', async (req, res) => {
 router.get('/profile', authenticate, async (req, res) => {
   const userId = req.user.id;
   try {
-    const user = await getAsync('SELECT * FROM users WHERE id = ?', [userId]);
+    const user = await getAsync('SELECT id, username, bio, fitness_goals, date_of_birth, datetime(created_at, "localtime") as created_at FROM users WHERE id = ?', [userId]);
+
     if (!user) {
       return res.status(404).send({ error: 'User not found.' });
     }
-    const { password, ...userWithoutPassword } = user;
-    res.status(200).json(userWithoutPassword);
+
+    // Fetch additional stats
+    const mealCount = await getAsync('SELECT COUNT(*) AS count FROM meals WHERE user_id = ?', [userId]);
+    const workoutCount = await getAsync('SELECT COUNT(*) AS count FROM workouts WHERE user_id = ?', [userId]);
+    const creationDate = new Date(user.created_at);
+    const currentDate = new Date();
+    const accountDurationDays = Math.round((currentDate - creationDate) / (1000 * 3600 * 24));
+
+    // Append additional data
+    user.mealsLogged = mealCount.count;
+    user.workoutsLogged = workoutCount.count;
+    user.accountAge = accountDurationDays;
+
+    res.status(200).json(user);
   } catch (error) {
     console.error('Error retrieving user profile:', error);
     res.status(500).send({ error: 'Failed to retrieve user profile. Please try again later.' });
   }
 });
 
-/**
- * Change user password.
- */
+/* Change user password.
+ 
 router.put('/changePassword', authenticate, async (req, res) => {
   const { oldPassword, newPassword } = req.body;
   const userId = req.user.id;
@@ -147,10 +159,9 @@ router.put('/changePassword', authenticate, async (req, res) => {
     }
   });
 });
+*/
 
-/**
- * Delete a user.
- */
+/*  Delete a user.
 router.delete('/delete/:id', authenticate, async (req, res) => {
   const { id } = req.params;
   if (req.user.id !== parseInt(id)) {
@@ -167,7 +178,7 @@ router.delete('/delete/:id', authenticate, async (req, res) => {
     res.status(200).send({ message: 'User deleted successfully.' });
   });
 });
-
+*/
 
 // Get all users 
 router.get('/', async (req, res) => {

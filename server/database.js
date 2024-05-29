@@ -42,7 +42,8 @@ async function initializeDB() {
         password TEXT,
         bio TEXT,
         fitness_goals TEXT,
-        date_of_birth DATE
+        date_of_birth DATE,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
       )
     `);
     console.log('Users table created or already exists.');
