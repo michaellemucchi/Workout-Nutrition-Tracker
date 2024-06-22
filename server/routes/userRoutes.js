@@ -139,16 +139,36 @@ const storage = multer.diskStorage({
     }
 });
 
-const upload = multer({ storage: storage });
+const fileFilter = (req, file, cb) => {
+  // Accept images only
+  if (!file.originalname.match(/\.(jpg|JPG|jpeg|JPEG|png|PNG)$/)) {
+      req.fileValidationError = 'Only image files are allowed!';
+      return cb(new Error('Only image files are allowed!'), false);
+  }
+  cb(null, true);
+};
+
+const upload = multer({
+  storage: storage,
+  limits: {
+      fileSize: 52428800 // 50MB max file size
+  },
+  fileFilter: fileFilter
+});
+
 
 router.post('/profile/upload', authenticate, upload.single('profilePic'), async (req, res) => {
     const userId = req.user.id;  // Ensure you have middleware that populates req.user
     const profilePictureUrl = `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`;
 
+    if (req.fileValidationError) {
+      return res.send(req.fileValidationError);
+    }
+  
     try {
       const result = await runAsync('UPDATE users SET profile_picture = ? WHERE id = ?', [profilePictureUrl, userId]);
       if (result.changes > 0) {
-          res.status(200).json({ message: 'Profile picture updated successfully', profilePicture: profilePictureUrl });
+          res.status(200).json({ message: 'Profile picture updated successfully', profile_picture: profilePictureUrl });
       } else {
           throw new Error('User not found');
       }

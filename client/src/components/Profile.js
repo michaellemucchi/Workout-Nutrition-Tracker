@@ -20,7 +20,6 @@ const Profile = () => {
                     }
                 });
                 const data = await response.json();
-                console.log('Fetched profile data:', data); // Debug: Log fetched data
                 if (response.ok) {
                     setProfile(data);
                     setLoading(false);
@@ -37,6 +36,21 @@ const Profile = () => {
 
     const handleFileChange = event => {
         setFile(event.target.files[0]);
+        if (file) {
+            // Check the file size (e.g., 5MB maximum)
+            if (file.size > 52428800) {
+                alert('File size must not exceed 5MB');
+                return;
+            }
+    
+            // Check the file type
+            if (!['image/jpeg', 'image/png'].includes(file.type)) {
+                alert('Only JPEG and PNG files are allowed');
+                return;
+            }
+    
+            setFile(file);
+        }
     };
 
     const uploadProfilePicture = async () => {
@@ -57,7 +71,7 @@ const Profile = () => {
                 alert(result.message);
                 setProfile(prevState => ({
                     ...prevState,
-                    profilePicture: result.profilePicture  // Updating state with new profile picture URL
+                    profile_picture: result.profile_picture  // Updating state with new profile picture URL
                 }));
             } else {
                 throw new Error('Failed to upload image');
@@ -74,9 +88,12 @@ const Profile = () => {
     return (
         <div className="profile-container">
             <div className="profile-sidebar">
-                <img src={profile?.profilePicture ? profile.profilePicture : person} alt="Profile" />
-                <input type="file" onChange={handleFileChange} />
-                <button onClick={uploadProfilePicture}>Upload Picture</button>
+                {console.log(profile)}
+                <img src={profile?.profile_picture ? profile?.profile_picture : person} alt="Profile" />
+                <input type="file" onChange={handleFileChange} accept="image/jpeg, image/png" />
+                {file && (  // Check if file is not null to display the button
+                    <button onClick={uploadProfilePicture}>Upload Picture</button>
+                )}
                 <h2>{profile?.username}</h2>
                 <p>Meals Logged: {profile?.mealsLogged}</p>
                 <p>Workouts Logged: {profile?.workoutsLogged}</p>

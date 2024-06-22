@@ -13,6 +13,7 @@ app.use(cors({
   credentials: true,
   optionsSuccessStatus: 200,
   allowedHeaders: ['Content-Type', 'Authorization']  // Explicitly allow Authorization header
+
 }));
 
 
@@ -23,7 +24,11 @@ app.use(bodyParser.json());
 app.use('/api/users', userRoutes);
 app.use('/api/meals', mealRoutes);
 app.use('/api/workouts', workoutRoutes);
-app.use('/uploads', express.static('uploads'));
+app.use('/uploads', express.static('uploads', {
+  setHeaders: function (res, path, stat) {
+      res.set('Cache-Control', 'no-store');
+  }
+}));
 
 
 const PORT = process.env.PORT || 3000;
