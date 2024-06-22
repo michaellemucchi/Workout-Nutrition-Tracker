@@ -5,6 +5,7 @@ const {runAsync, getAsync, allAsync} = require('../database');
 const { generateToken } = require('../utils/jwtHelper');
 const authenticate = require('../middlewares/authenticate');
 const moment = require('moment'); // Moment.js for easy date manipulation
+const multer = require('multer');
 
 const router = express.Router();
 
@@ -103,7 +104,7 @@ router.post('/login', async (req, res) => {
 router.get('/profile', authenticate, async (req, res) => {
   const userId = req.user.id;
   try {
-    const user = await getAsync('SELECT id, username, bio, fitness_goals, date_of_birth, datetime(created_at, "localtime") as created_at FROM users WHERE id = ?', [userId]);
+    const user = await getAsync('SELECT id, username, bio, fitness_goals, date_of_birth, profile_picture, datetime(created_at, "localtime") as created_at FROM users WHERE id = ?', [userId]);
 
     if (!user) {
       return res.status(404).send({ error: 'User not found.' });
@@ -126,6 +127,34 @@ router.get('/profile', authenticate, async (req, res) => {
     console.error('Error retrieving user profile:', error);
     res.status(500).send({ error: 'Failed to retrieve user profile. Please try again later.' });
   }
+});
+
+
+const storage = multer.diskStorage({
+    destination: function(req, file, cb) {
+        cb(null, './uploads/');  // Make sure this uploads directory is publicly accessible
+    },
+    filename: function(req, file, cb) {
+        cb(null, Date.now() + '-' + file.originalname);
+    }
+});
+
+const upload = multer({ storage: storage });
+
+router.post('/profile/upload', authenticate, upload.single('profilePic'), async (req, res) => {
+    const userId = req.user.id;  // Ensure you have middleware that populates req.user
+    const profilePictureUrl = `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`;
+
+    try {
+      const result = await runAsync('UPDATE users SET profile_picture = ? WHERE id = ?', [profilePictureUrl, userId]);
+      if (result.changes > 0) {
+          res.status(200).json({ message: 'Profile picture updated successfully', profilePicture: profilePictureUrl });
+      } else {
+          throw new Error('User not found');
+      }
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
 });
 
 /* Change user password.

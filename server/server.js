@@ -9,7 +9,10 @@ const cors = require('cors');
 
 
 app.use(cors({
-  origin: 'http://localhost:3001'  
+  origin: 'http://localhost:3001',
+  credentials: true,
+  optionsSuccessStatus: 200,
+  allowedHeaders: ['Content-Type', 'Authorization']  // Explicitly allow Authorization header
 }));
 
 
@@ -20,6 +23,7 @@ app.use(bodyParser.json());
 app.use('/api/users', userRoutes);
 app.use('/api/meals', mealRoutes);
 app.use('/api/workouts', workoutRoutes);
+app.use('/uploads', express.static('uploads'));
 
 
 const PORT = process.env.PORT || 3000;

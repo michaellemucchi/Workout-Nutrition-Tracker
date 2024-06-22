@@ -24,3 +24,15 @@ button {
     padding: 10px;
     margin-top: 10px;
 }
+
+.profile-sidebar img {
+    width: 200px;
+    height: 200px;
+}
+.profile-sidebar input[type="file"],
+.profile-sidebar button {
+    display: block; /* Makes each element take the full width of the container */
+    width: 100%; /* Ensures they fill the container */
+    margin: 10px 0; /* Adds some vertical spacing */
+    text-align: center; /* Centers text in buttons and inputs */
+}
