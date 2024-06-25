@@ -30,17 +30,18 @@ router.post('/register/initiate', [
   }
 
   const { username, password, dateOfBirth } = req.body;
+  const lowerCaseUsername = username.toLowerCase();
   try {
+    const existingUser = await getAsync('SELECT id FROM users WHERE LOWER(username) = ?', [lowerCaseUsername]);
+    if (existingUser) {
+      return res.status(409).send({ error: 'Username is already taken.' });
+    }
     const hashedPassword = await bcrypt.hash(password, 8);
-    const result = await runAsync('INSERT INTO users (username, password, date_of_birth) VALUES (?, ?, ?)', [username, hashedPassword, dateOfBirth]);
+    const result = await runAsync('INSERT INTO users (username, password, date_of_birth) VALUES (?, ?, ?)', [lowerCaseUsername, hashedPassword, dateOfBirth]);
     res.status(201).json({ message: 'User registered. Please complete your profile.', userId: result.lastID });
   } catch (err) {
-    if (err.code === 'SQLITE_CONSTRAINT') {
-      res.status(409).send({ error: 'Username is already taken.' });
-    } else {
-      console.error(err); // Log full error
-      res.status(500).send({ error: 'Internal server error. Please try again later.' });
-    }
+    console.error(err); // Log full error
+    res.status(500).send({ error: 'Internal server error. Please try again later.' });
   }
 });
 
@@ -69,13 +70,15 @@ router.post('/register/complete', [
 // Login a user.
 router.post('/login', async (req, res) => {
   const { username, password } = req.body;
+  const lowerCaseUsername = username.toLowerCase();
+
 
   if (!username || !password) {
     return res.status(400).send({ error: 'Username and password are required.' });
   }
 
   try {
-      const user = await getAsync('SELECT id, username, password FROM users WHERE username = ?', [username]);
+      const user = await getAsync('SELECT id, username, password FROM users WHERE username = ?', [lowerCaseUsername]);
   
       if (!user) {
           return res.status(401).send({ error: 'Login failed! Incorrect Username' });
@@ -104,7 +107,7 @@ router.post('/login', async (req, res) => {
 router.get('/profile', authenticate, async (req, res) => {
   const userId = req.user.id;
   try {
-    const user = await getAsync('SELECT id, username, bio, fitness_goals, date_of_birth, profile_picture, datetime(created_at, "localtime") as created_at FROM users WHERE id = ?', [userId]);
+    const user = await getAsync('SELECT id, username, bio, fitness_goals, date_of_birth, profilePicture, datetime(created_at, "localtime") as created_at FROM users WHERE id = ?', [userId]);
 
     if (!user) {
       return res.status(404).send({ error: 'User not found.' });
@@ -166,9 +169,9 @@ router.post('/profile/upload', authenticate, upload.single('profilePic'), async 
     }
   
     try {
-      const result = await runAsync('UPDATE users SET profile_picture = ? WHERE id = ?', [profilePictureUrl, userId]);
+      const result = await runAsync('UPDATE users SET profilePicture = ? WHERE id = ?', [profilePictureUrl, userId]);
       if (result.changes > 0) {
-          res.status(200).json({ message: 'Profile picture updated successfully', profile_picture: profilePictureUrl });
+          res.status(200).json({ message: 'Profile picture updated successfully', profilePicture: profilePictureUrl });
       } else {
           throw new Error('User not found');
       }
@@ -177,38 +180,42 @@ router.post('/profile/upload', authenticate, upload.single('profilePic'), async 
     }
 });
 
-/* Change user password.
- 
+// Change user password.
+// Change user password.
 router.put('/changePassword', authenticate, async (req, res) => {
   const { oldPassword, newPassword } = req.body;
   const userId = req.user.id;
 
-  db.get('SELECT * FROM users WHERE id = ?', [userId], async (err, user) => {
-    if (err) {
-      return res.status(500).send({ error: 'Internal server error. Please try again later.' });
-    }
+  if (oldPassword === newPassword) {
+    return res.status(400).send({ error: 'New password must be different from the old password.' });
+  }
+
+  try {
+    // Fetch the user from the database
+    const user = await getAsync('SELECT * FROM users WHERE id = ?', [userId]);
     if (!user) {
       return res.status(404).send({ error: 'User not found.' });
     }
 
-    try {
-      const isMatch = await bcrypt.compare(oldPassword, user.password);
-      if (!isMatch) {
-        return res.status(400).send({ error: 'Incorrect old password.' });
-      }
-      const hashedPassword = await bcrypt.hash(newPassword, 8);
-      db.run('UPDATE users SET password = ? WHERE id = ?', [hashedPassword, userId], (err) => {
-        if (err) {
-          return res.status(500).send({ error: 'Failed to change password. Please try again later.' });
-        }
-        res.status(200).send({ message: 'Password changed successfully.' });
-      });
-    } catch (error) {
-      res.status(500).send({ error: 'Internal server error. Please try again later.' });
+    // Check if the old password matches
+    const isMatch = await bcrypt.compare(oldPassword, user.password);
+    if (!isMatch) {
+      return res.status(400).send({ error: 'Incorrect old password.' });
     }
-  });
+
+    // Hash the new password
+    const hashedPassword = await bcrypt.hash(newPassword, 8);
+
+    // Update the password in the database
+    await runAsync('UPDATE users SET password = ? WHERE id = ?', [hashedPassword, userId]);
+    res.status(200).send({ message: 'Password changed successfully.' });
+  } catch (error) {
+    console.error('Error changing password:', error);
+    res.status(500).send({ error: 'Failed to change password. Please try again later.' });
+  }
 });
-*/
+
+
 
 /*  Delete a user.
 router.delete('/delete/:id', authenticate, async (req, res) => {

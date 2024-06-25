@@ -1,68 +1,61 @@
 .error {
     margin: auto;
-    color: red;  /* Makes the error message red */
-    font-size: 1.2rem;  /* Makes the text slightly larger */
+    color: red;
+    font-size: 1.2rem;
     border: 1px solid red;
     padding: 5px;
     border-radius: 10px;
-  }
+    text-align: center;
+}
 
 .message {
     margin: auto;
-    color: green;  /* Makes the error message red */
-    font-size: 1.2rem;  /* Makes the text slightly larger */
+    color: green;
+    font-size: 1.2rem;
     border: 1px solid green;
     padding: 5px;
     border-radius: 10px;
+    text-align: center;
 }
 
 .register-form {
     margin: auto;
-    margin-top: 15%;
+    margin-top: 10%;
     width: 400px;
     padding: 30px;
     background: linear-gradient(135deg, var(--primary-color), var(--accent2-color));
     border-radius: 15px;
     display: flex;
     flex-direction: column;
-    gap: 10px;  
+    gap: 20px;
     color: white;
 }
 
 .register-form h2 {
     font-size: 2rem;
-    margin: auto;
-    margin-bottom: 10px;
-}
-
-.register-form label > input {
-    margin-left: 20px;
-    border: 2px solid var(--primary-color); 
-    border-radius: 5px; 
-    outline: none; 
-    height: 30px;
-    width: 200px;
-}
-
-.register-form label > textarea {
-    margin-left: 20px;
-    border: 2px solid var(--primary-color); 
-    border-radius: 5px; 
-    outline: none; 
-    height: 30px;
-    transform: translateY(10px) ;
+    margin-bottom: 20px;
+    text-align: center;
 }
 
 .register-form label {
     display: block;
-    margin-top: 20px;
     font-weight: bold;
-    font-size: 1.5rem;
+    font-size: 1.2rem;
+}
+
+.register-form label > input,
+.register-form label > textarea {
+    margin-top: 10px;
+    padding: 10px;
+    border: 2px solid var(--primary-color);
+    border-radius: 5px;
+    outline: none;
+    width: calc(100% - 24px);
+    box-sizing: border-box;
 }
 
 .register-form button {
     margin: auto;
-    margin-top: 20px;
     padding: 10px;
     background-color: var(--accent2-color);
     border: 1px solid white;
@@ -70,10 +63,11 @@
     border-radius: 10px;
     cursor: pointer;
     width: 100px;
-    transition: all 0.3s ease; 
+    transition: all 0.3s ease;
+    font-size: 1rem;
 }
 
 .register-form button:hover {
-    background-color: var(--primary-color); 
-    transform: scale(1.1); 
+    background-color: var(--primary-color);
+    transform: scale(1.1);
 }

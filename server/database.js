@@ -43,7 +43,7 @@ async function initializeDB() {
         bio TEXT,
         fitness_goals TEXT,
         date_of_birth DATE,
-        profile_picture TEXT,
+        profilePicture TEXT,
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP
       )
     `);

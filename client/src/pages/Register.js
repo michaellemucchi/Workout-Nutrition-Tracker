@@ -11,13 +11,12 @@ const Register = () => {
     userId: '',
     username: '',
     password: '',
-    dateOfBirth: '',
+    dateOfBirth: '', // Initially empty to allow user to input their date of birth
     bio: '',
     fitnessGoals: ''
   });
 
   const [error, setError] = useState('');
-
   const [message, setMessage] = useState('');
 
   const handleChange = (event) => {
@@ -27,55 +26,52 @@ const Register = () => {
   const handleFirstPartSubmit = async (event) => {
     event.preventDefault();
     try {
-      const response = await fetch(`http://localhost:3000/api/users/register/initiate`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          username: userInfo.username,
-          password: userInfo.password,
-          dateOfBirth: userInfo.dateOfBirth
-        })
-      });
-  
-      const data = await response.json();
-      if (response.ok) {
-        const updatedInfo = { ...userInfo, userId: data.userId };
-        setMessage(data.message);
-        setUserInfo(updatedInfo);
-        setStep(2);
-        setError('');
-      } else {
-        throw new Error(data.errors ? data.errors.map(err => err.msg).join(', ') : data.error);
-      }
+        const response = await fetch(`http://localhost:3000/api/users/register/initiate`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                username: userInfo.username,
+                password: userInfo.password,
+                dateOfBirth: userInfo.dateOfBirth // Assuming you want just the date as string
+            })
+        });
+
+        const data = await response.json();
+        if (response.ok) {
+            setMessage(data.message);
+            setUserInfo(prevState => ({ ...prevState, userId: data.userId }));
+            setStep(2);
+            setError('');
+        } else {
+            throw new Error(data.errors ? data.errors.map(err => err.msg).join(', ') : data.error);
+        }
     } catch (err) {
-      setError(err.message);
+        setError(err.message || "Failed to register");
     }
-  };
+};
 
-
-  const handleSecondPartSubmit = async (event) => {
+const handleSecondPartSubmit = async (event) => {
     event.preventDefault();
     try {
-      const response = await fetch('http://localhost:3000/api/users/register/complete', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          userId: userInfo.userId,
-          bio: userInfo.bio,
-          fitnessGoals: userInfo.fitnessGoals
-        })
-      });
-      const data = await response.json();
-      if (response.ok) {
-        navigate('/login');
-      } else {
-          setMessage('');
-          throw new Error(data.errors ? data.errors.map(err => err.msg).join(', ') : data.error);
-      }
+        const response = await fetch('http://localhost:3000/api/users/register/complete', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                userId: userInfo.userId,
+                bio: userInfo.bio,
+                fitnessGoals: userInfo.fitnessGoals
+            })
+        });
+        const data = await response.json();
+        if (response.ok) {
+            navigate('/login');
+        } else {
+            throw new Error(data.errors ? data.errors.map(err => err.msg).join(', ') : data.error);
+        }
     } catch (err) {
-      setError(err.message);
+        setError(err.message || "Failed to complete registration");
     }
-  };
+};
 
 
   return (
@@ -95,7 +91,7 @@ const Register = () => {
           </label>
           <label>
             Date of Birth:
-            <input type="date" name="dateOfBirth" value={userInfo.dateOfBirth} onChange={handleChange} />
+            <input type="text" name="dateOfBirth" placeholder="YYYY-MM-DD" value={userInfo.dateOfBirth} onChange={handleChange} />
           </label>
           <button type="submit">Next</button>
         </form>
