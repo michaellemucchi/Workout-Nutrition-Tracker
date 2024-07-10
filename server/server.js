@@ -16,7 +16,6 @@ app.use(cors({
 
 }));
 
-
 // Middleware to parse JSON bodies
 app.use(bodyParser.json()); 
 

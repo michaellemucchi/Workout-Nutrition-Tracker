@@ -2,17 +2,20 @@ const sqlite3 = require('sqlite3').verbose();
 const { promisify } = require('util');
 
 
-const db = new sqlite3.Database('./database.sqlite', (err) => {
+const db = new sqlite3.Database('./database.sqlite', async (err) => {
   if (err) {
     console.error('Error opening database:', err.message);
     // Exit the process if the database connection fails
     process.exit(1);
   } else {
     console.log('Connected to the SQLite database.');
-    initializeDB().catch(err => {
+    try {
+      await initializeDB();
+      console.log('Database initialized successfully.');
+    } catch (err) {
       console.error('Initialization failed:', err.message);
-      process.exit(1); // Exit the process if table creation fails
-    });
+      process.exit(1); // Consider a more resilient error handling strategy here
+    }
   }
 });
 
@@ -30,6 +33,8 @@ function runAsync(sql, params = []) {
 
 const getAsync = promisify(db.get.bind(db)); 
 const allAsync = promisify(db.all.bind(db));
+
+
 
 
 async function initializeDB() {
@@ -64,20 +69,31 @@ async function initializeDB() {
     `);
     console.log('Meals table created or already exists.');
 
-    // Workouts table
+    // Workouts table (updated to remove specific details about the workout)
     await createTable(`
       CREATE TABLE IF NOT EXISTS workouts (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         user_id INTEGER NOT NULL,
-        workout_type TEXT NOT NULL,
-        duration INTEGER NOT NULL,
-        description TEXT,
         date_logged DATETIME DEFAULT CURRENT_TIMESTAMP,
         FOREIGN KEY(user_id) REFERENCES users(id)
       )
     `);
     console.log('Workouts table created or already exists.');
-    
+
+    // Exercises table (new table for exercise details)
+    await createTable(`
+      CREATE TABLE IF NOT EXISTS exercises (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        workout_id INTEGER NOT NULL,
+        name TEXT NOT NULL,
+        category TEXT NOT NULL,
+        reps INTEGER,
+        weight DECIMAL,
+        FOREIGN KEY(workout_id) REFERENCES workouts(id)
+      )
+    `);
+    console.log('Exercises table created.');
+
   } catch (err) {
     throw new Error('Error creating tables: ' + err.message);
   }
