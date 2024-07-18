@@ -8,14 +8,14 @@ const router = express.Router();
 router.post('/AddWorkout', authenticate, async (req, res) => {
   const { exercises } = req.body;
   const userId = req.user.id;
+  const dateLogged = new Date().toISOString(); // Ensuring date is in UTC in ISO format
   try {
-    // Insert into workouts table
-    const workoutResult = await db.runAsync(`INSERT INTO workouts (user_id) VALUES (?)`, [userId]);
+    const workoutResult = await db.runAsync(`INSERT INTO workouts (user_id, date_logged) VALUES (?, ?)`, [userId, dateLogged]);
     const workout_id = workoutResult.lastID;
-    // Insert each exercise associated with the workout
+
     for (const exercise of exercises) {
       await db.runAsync(`INSERT INTO exercises (workout_id, name, category, sets, reps, weight) VALUES (?, ?, ?, ?, ?, ?)`, 
-                        [workout_id, exercise.exercise, exercise.category, exercise.sets, exercise.reps, exercise.weight]);
+        [workout_id, exercise.exercise, exercise.category, exercise.sets, exercise.reps, exercise.weight]);
     }
     
     res.status(201).send({ message: "Workout and exercises added successfully." });
@@ -23,6 +23,7 @@ router.post('/AddWorkout', authenticate, async (req, res) => {
     res.status(500).send({ error: "Failed to log workout and exercises. Please try again later.", details: error.message });
   }
 });
+
 
 
 //get all workouts

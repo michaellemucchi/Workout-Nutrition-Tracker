@@ -63,6 +63,8 @@ async function initializeDB() {
         meal_type TEXT NOT NULL,
         calories INTEGER NOT NULL,
         protein INTEGER NOT NULL,
+        carbs INTEGER NOT NULL,            
+        fats INTEGER NOT NULL,             
         date_logged DATETIME DEFAULT CURRENT_TIMESTAMP,
         FOREIGN KEY(user_id) REFERENCES users(id)
       )
