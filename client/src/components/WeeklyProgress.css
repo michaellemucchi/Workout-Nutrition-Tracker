@@ -1,0 +1,33 @@
+.weekly-checker {
+  display: flex;
+  flex-direction: column; /* Changed to vertical layout */
+  align-items: flex-start; /* Align items to the start of the flex container */
+  padding: 5px;
+  background-color: #f0f0f0;
+}
+
+.weekly-checker > div {
+  display: flex;
+  flex-direction: row;
+  align-items: center; /* Center items vertically */
+  justify-content: space-between; /* Space between day info and icon */
+  border: 1px solid #ccc;
+  padding: 5px;
+  background-color: #fff;
+  width: 100%; /* Full width to accommodate both text and icon */
+  margin-bottom: 2px; /* Margin between days */
+}
+
+.day-info {
+  flex-grow: 1; /* Allows day info to take up remaining space */
+}
+
+.day-status span {
+  font-size: 20px; /* Icon size */
+  margin: 0 5px; /* Margin around the icon */
+}
+
+.day-status p {
+  margin-top: 2px;
+  font-size: 14px; /* Smaller font size for category details */
+}

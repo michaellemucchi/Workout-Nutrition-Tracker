@@ -87,6 +87,7 @@ async function initializeDB() {
         workout_id INTEGER NOT NULL,
         name TEXT NOT NULL,
         category TEXT NOT NULL,
+        sets INTEGER,
         reps INTEGER,
         weight DECIMAL,
         FOREIGN KEY(workout_id) REFERENCES workouts(id)

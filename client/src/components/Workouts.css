@@ -1,0 +1,75 @@
+.workouts-container {
+    display: flex;
+    flex-direction: column;
+    max-width: 90%;
+    margin: auto;
+    padding: 20px;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    gap: 20px;
+}
+
+.control-panel {
+    display: flex;
+    justify-content: space-between;
+}
+
+.progress-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: start;  /* Aligns the items to the start of the flex container */
+    height: auto;  /* Adjust the height automatically */
+}
+
+.monthly-progress, .weekly-progress {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    margin: 10px; /* Adjust margins for spacing */
+}
+
+.workouts-modify-btn {
+    padding: 10px 20px;
+    background-color: #6200EA;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    border: none;
+}
+
+
+.modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    max-height: 80vh; /* Limit the modal's height */
+    overflow-y: auto; /* Make the modal scrollable */
+}
+
+.workout-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.exercise-entry {
+    background: #f8f8f8;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    margin-bottom: 10px; /* Adds space between exercises */
+}

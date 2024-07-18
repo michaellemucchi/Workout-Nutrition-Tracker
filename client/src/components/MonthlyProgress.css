@@ -1,0 +1,28 @@
+.calendar {
+  text-align: center;
+  font-size: 16px;
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr); /* 7 days per week */
+  gap: 10px;
+}
+
+.day {
+  padding: 10px;
+  border: 1px solid #ccc;
+  position: relative;
+}
+
+.day.done {
+  background-color: #e0ffe0;
+}
+
+.day.missed {
+  background-color: #ffdcdc;
+}
+
+.day.upcoming {
+  background-color: #f0f0f0;
+}

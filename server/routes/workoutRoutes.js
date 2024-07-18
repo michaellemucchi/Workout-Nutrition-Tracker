@@ -4,112 +4,80 @@ const authenticate = require('../middlewares/authenticate');
 
 const router = express.Router();
 
-// Add a workout 
+// Add a workout
 router.post('/AddWorkout', authenticate, async (req, res) => {
-  const { exercises } = req.body; // Assuming exercises is an array of { name, category, reps, weight }
-  const user_id = req.user.id;
-  
-  // Begin database transaction
-  db.run("BEGIN TRANSACTION;", async (err) => {
-      if (err) {
-          return res.status(500).send({ error: "Failed to start transaction. Please try again later." });
-      }
-
-      try {
-          // Insert into workouts table
-          const workoutResult = await db.runAsync(`INSERT INTO workouts (user_id) VALUES (?)`, [user_id]);
-          const workout_id = workoutResult.lastID;
-
-          // Insert each exercise associated with the workout
-          for (const exercise of exercises) {
-              await db.runAsync(`INSERT INTO exercises (workout_id, name, category, reps, weight) VALUES (?, ?, ?, ?, ?)`, 
-                  [workout_id, exercise.name, exercise.category, exercise.reps, exercise.weight]);
-          }
-
-          // Commit transaction
-          db.run("COMMIT;", () => {
-              res.status(201).send({ message: "Workout and exercises added successfully." });
-          });
-      } catch (error) {
-          // Rollback transaction on error
-          db.run("ROLLBACK;", () => {
-              res.status(500).send({ error: "Failed to log workout and exercises. Please try again later." });
-          });
-      }
-  });
-});
-
-// get workout by date
-router.get('/byDate', authenticate, async (req, res) => {
-  const { date } = req.query;
+  const { exercises } = req.body;
   const userId = req.user.id;
-
   try {
-      const workouts = await db.allAsync('SELECT * FROM workouts WHERE user_id = ? AND DATE(date_logged) = ?', [userId, date]);
-      if (workouts.length === 0) {
-          return res.status(404).send({ error: 'No workouts found for this date.' });
-      }
-      res.status(200).json(workouts);
-  } catch (err) {
-      return res.status(500).send({ error: 'Failed to retrieve workout. Please try again later.', details: err.message });
+    // Insert into workouts table
+    const workoutResult = await db.runAsync(`INSERT INTO workouts (user_id) VALUES (?)`, [userId]);
+    const workout_id = workoutResult.lastID;
+    // Insert each exercise associated with the workout
+    for (const exercise of exercises) {
+      await db.runAsync(`INSERT INTO exercises (workout_id, name, category, sets, reps, weight) VALUES (?, ?, ?, ?, ?, ?)`, 
+                        [workout_id, exercise.exercise, exercise.category, exercise.sets, exercise.reps, exercise.weight]);
+    }
+    
+    res.status(201).send({ message: "Workout and exercises added successfully." });
+  } catch (error) {
+    res.status(500).send({ error: "Failed to log workout and exercises. Please try again later.", details: error.message });
   }
 });
+
 
 //get all workouts
 router.get('/allWorkouts', authenticate, async (req, res) => {
   const userId = req.user.id;
 
   try {
-      const workouts = await db.allAsync('SELECT * FROM workouts WHERE user_id = ?', [userId]);
-      res.status(200).json(workouts);
+    const workouts = await db.allAsync(`
+      SELECT 
+        workouts.id,
+        workouts.date_logged,
+        group_concat(exercises.category) as categories,
+        group_concat(exercises.name) as exercises,
+        group_concat(exercises.sets) as sets,
+        group_concat(exercises.reps) as reps,
+        group_concat(exercises.weight) as weights
+      FROM workouts
+      LEFT JOIN exercises ON workouts.id = exercises.workout_id
+      WHERE workouts.user_id = ?
+      GROUP BY workouts.id
+    `, [userId]);
+
+    const detailedWorkouts = workouts.map(workout => ({
+      ...workout,
+      categories: workout.categories ? workout.categories.split(',') : [],
+      exercises: workout.exercises ? workout.exercises.split(',') : [],
+      sets: workout.sets ? workout.sets.split(',') : [],
+      reps: workout.reps ? workout.reps.split(',') : [],
+      weights: workout.weights ? workout.weights.split(',') : [],
+      date: new Date(workout.date_logged).toLocaleDateString()
+    }));
+
+    res.status(200).json(detailedWorkouts);
   } catch (err) {
-      return res.status(500).send({ error: 'Failed to retrieve workouts. Please try again later.', details: err.message });
+    res.status(500).send({ error: 'Failed to retrieve workouts. Please try again later.', details: err.message });
   }
 });
 
 
-// get this weeks workouts
-router.get('/thisWeek', authenticate, async (req, res) => {
-  const userId = req.user.id;
-  const now = new Date();
-  const startOfWeek = new Date(now.setDate(now.getDate() - now.getDay() + (now.getDay() === 0 ? -6 : 1))); // Adjust for start of week
 
+// Delete a workout log
+router.delete('/deleteWorkout/:id', authenticate, async (req, res) => {
+  const workoutId = req.params.id;
+  const userId = req.user.id; // Ensure that the workout belongs to the user
   try {
-      const workouts = await db.allAsync('SELECT * FROM workouts WHERE user_id = ? AND date_logged >= ?', [userId, startOfWeek.toISOString()]);
-      res.status(200).json(workouts);
-  } catch (err) {
-      return res.status(500).send({ error: 'Failed to retrieve this week\'s workouts. Please try again later.', details: err.message });
+      await db.runAsync('DELETE FROM exercises WHERE workout_id = ?', [workoutId]);
+      const result = await db.runAsync('DELETE FROM workouts WHERE id = ? AND user_id = ?', [workoutId, userId]);
+      if (result.changes) {
+          res.status(200).send({ message: 'Workout deleted successfully.' });
+      } else {
+          throw new Error('No workout found or you are not authorized to delete this workout.');
+      }
+  } catch (error) {
+      res.status(500).send({ error: "Failed to delete workout. Please try again later.", details: error.message });
   }
-});
-
-
-
-// Delete a workout log.
-router.delete('/DeleteWorkout/:id', authenticate, (req, res) => {
-  const { id } = req.params;
-  const userId = req.user.id;
-
-  db.get('SELECT * FROM workouts WHERE id = ?', [id], (err, workout) => {
-    if (err) {
-      return res.status(500).send({ error: 'Failed to retrieve workout. Please try again later.' });
-    }
-    if (!workout) {
-      return res.status(404).send({ error: 'Workout not found.' });
-    }
-    if (workout.user_id !== userId) {
-      return res.status(403).send({ error: 'Unauthorized to delete this workout.' });
-    }
-
-    db.run('DELETE FROM workouts WHERE id = ?', [id], function(err) {
-      if (err) {
-        return res.status(500).send({ error: 'Failed to delete workout. Please try again later.' });
-      }
-      if (this.changes === 0) {
-        return res.status(404).send({ error: 'Workout not found.' });
-      }
-      res.status(200).send({ message: 'Workout deleted successfully.' });
-    });
-  });
 });
 
 module.exports = router;
