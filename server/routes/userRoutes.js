@@ -29,7 +29,9 @@ router.post('/register/initiate', [
     return res.status(400).json({ errors: errors.array() });
   }
 
-  const { username, password, dateOfBirth } = req.body;
+  const { username, password, dateOfBirth, } = req.body;
+  const calorieGoal = 2000;
+  const fitnessGoal = 'maintain';
   const lowerCaseUsername = username.toLowerCase();
   try {
     const existingUser = await getAsync('SELECT id FROM users WHERE LOWER(username) = ?', [lowerCaseUsername]);
@@ -37,7 +39,10 @@ router.post('/register/initiate', [
       return res.status(409).send({ error: 'Username is already taken.' });
     }
     const hashedPassword = await bcrypt.hash(password, 8);
-    const result = await runAsync('INSERT INTO users (username, password, date_of_birth) VALUES (?, ?, ?)', [lowerCaseUsername, hashedPassword, dateOfBirth]);
+    const result = await runAsync(
+      `INSERT INTO users (username, password, date_of_birth, calorie_goal, fitness_goal) VALUES (?, ?, ?, ?, ?)`,
+      [lowerCaseUsername, hashedPassword, dateOfBirth, calorieGoal, fitnessGoal]
+    );
     res.status(201).json({ message: 'User registered. Please complete your profile.', userId: result.lastID });
   } catch (err) {
     console.error(err); // Log full error
@@ -107,7 +112,10 @@ router.post('/login', async (req, res) => {
 router.get('/profile', authenticate, async (req, res) => {
   const userId = req.user.id;
   try {
-    const user = await getAsync('SELECT id, username, bio, fitness_goals, date_of_birth, profilePicture, datetime(created_at, "localtime") as created_at FROM users WHERE id = ?', [userId]);
+    const user = await getAsync(
+      `SELECT id, username, bio, fitness_goals, calorie_goal, fitness_goal, date_of_birth, profilePicture, datetime(created_at, "localtime") as created_at FROM users WHERE id = ?`, 
+      [userId]
+    );
 
     if (!user) {
       return res.status(404).send({ error: 'User not found.' });
@@ -131,6 +139,7 @@ router.get('/profile', authenticate, async (req, res) => {
     res.status(500).send({ error: 'Failed to retrieve user profile. Please try again later.' });
   }
 });
+
 
 
 const storage = multer.diskStorage({
@@ -181,7 +190,6 @@ router.post('/profile/upload', authenticate, upload.single('profilePic'), async 
 });
 
 // Change user password.
-// Change user password.
 router.put('/changePassword', authenticate, async (req, res) => {
   const { oldPassword, newPassword } = req.body;
   const userId = req.user.id;
@@ -214,6 +222,44 @@ router.put('/changePassword', authenticate, async (req, res) => {
     res.status(500).send({ error: 'Failed to change password. Please try again later.' });
   }
 });
+
+router.get('/GetCalorieGoal', authenticate, async (req, res) => {
+  const userId = req.user.id;
+  try {
+      const result = await getAsync(
+          `SELECT calorie_goal, fitness_goal FROM users WHERE id = ?`,
+          [userId]
+      );
+      if (result) {
+          res.status(200).json({
+              calorieGoal: result.calorie_goal,
+              fitnessGoal: result.fitness_goal
+          });
+      } else {
+          res.status(404).send({ error: 'User not found.' });
+      }
+  } catch (error) {
+      res.status(500).send({ error: "Internal Server Error", details: error.message });
+  }
+});
+
+
+router.post('/SetCalorieGoal', authenticate, async (req, res) => {
+  const { calorieGoal, fitnessGoal } = req.body;
+  const userId = req.user.id;
+  try {
+    await runAsync(
+      `UPDATE users SET calorie_goal = ?, fitness_goal = ? WHERE id = ?`,
+      [calorieGoal, fitnessGoal, userId] 
+    );
+    res.status(200).send({ message: 'Calorie and fitness goals updated successfully.' });
+  } catch (error) {
+    res.status(500).send({ error: "Failed to update goals.", details: error.message });
+  }
+});
+
+
+
 
 
 

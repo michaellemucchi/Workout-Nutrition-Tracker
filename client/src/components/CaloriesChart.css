@@ -1,0 +1,24 @@
+.calorie-chart-container {
+    position: relative;
+    width: 200px;
+    height: 200px;
+    margin: auto;
+}
+
+.calorie-chart-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+}
+
+.calorie-percentage {
+    font-size: 1.2em;
+    font-weight: bold;
+}
+
+.calorie-count {
+    font-size: 0.8em;
+    color: #666;
+}

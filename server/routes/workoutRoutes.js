@@ -1,5 +1,5 @@
 const express = require('express');
-const db = require('../database');
+const {runAsync, getAsync, allAsync} = require('../database');
 const authenticate = require('../middlewares/authenticate');
 
 const router = express.Router();
@@ -10,11 +10,11 @@ router.post('/AddWorkout', authenticate, async (req, res) => {
   const userId = req.user.id;
   const dateLogged = new Date().toISOString(); // Ensuring date is in UTC in ISO format
   try {
-    const workoutResult = await db.runAsync(`INSERT INTO workouts (user_id, date_logged) VALUES (?, ?)`, [userId, dateLogged]);
+    const workoutResult = await runAsync(`INSERT INTO workouts (user_id, date_logged) VALUES (?, ?)`, [userId, dateLogged]);
     const workout_id = workoutResult.lastID;
 
     for (const exercise of exercises) {
-      await db.runAsync(`INSERT INTO exercises (workout_id, name, category, sets, reps, weight) VALUES (?, ?, ?, ?, ?, ?)`, 
+      await runAsync(`INSERT INTO exercises (workout_id, name, category, sets, reps, weight) VALUES (?, ?, ?, ?, ?, ?)`, 
         [workout_id, exercise.exercise, exercise.category, exercise.sets, exercise.reps, exercise.weight]);
     }
     
@@ -31,7 +31,7 @@ router.get('/allWorkouts', authenticate, async (req, res) => {
   const userId = req.user.id;
 
   try {
-    const workouts = await db.allAsync(`
+    const workouts = await allAsync(`
       SELECT 
         workouts.id,
         workouts.date_logged,
@@ -69,8 +69,8 @@ router.delete('/deleteWorkout/:id', authenticate, async (req, res) => {
   const workoutId = req.params.id;
   const userId = req.user.id; // Ensure that the workout belongs to the user
   try {
-      await db.runAsync('DELETE FROM exercises WHERE workout_id = ?', [workoutId]);
-      const result = await db.runAsync('DELETE FROM workouts WHERE id = ? AND user_id = ?', [workoutId, userId]);
+      await runAsync('DELETE FROM exercises WHERE workout_id = ?', [workoutId]);
+      const result = await runAsync('DELETE FROM workouts WHERE id = ? AND user_id = ?', [workoutId, userId]);
       if (result.changes) {
           res.status(200).send({ message: 'Workout deleted successfully.' });
       } else {

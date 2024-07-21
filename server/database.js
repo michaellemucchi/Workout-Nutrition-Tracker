@@ -35,8 +35,6 @@ const getAsync = promisify(db.get.bind(db));
 const allAsync = promisify(db.all.bind(db));
 
 
-
-
 async function initializeDB() {
   try {
     // Users table
@@ -47,6 +45,8 @@ async function initializeDB() {
         password TEXT,
         bio TEXT,
         fitness_goals TEXT,
+        calorie_goal INTEGER,
+        fitness_goal TEXT, 
         date_of_birth DATE,
         profilePicture TEXT,
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP

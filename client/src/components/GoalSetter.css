@@ -1,0 +1,60 @@
+.goal-setter-container {
+    text-align: center;
+    background-color: #f4f4f4;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    margin: 0;
+}
+
+.goal-setter-container > p {
+    margin: 5px; 
+}
+
+.set-goal-button {
+    background-color: #6200EA;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-bottom: 10px; /* Space above the button */
+    font-size: 16px;
+}
+
+.set-goal-button:hover {
+    background-color: #5a00d2;
+}
+
+.goal-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.goal-form input {
+    padding: 8px;
+    margin: 5px;
+    width: 60%;
+}
+
+.goal-form select {
+    padding: 8px;
+    margin: 5px;
+    width: 65%;
+}
+
+.update-goal-button {
+    padding: 10px 15px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 40%;
+}
+
+.update-goal-button:hover {
+    background-color: #45a049;
+}

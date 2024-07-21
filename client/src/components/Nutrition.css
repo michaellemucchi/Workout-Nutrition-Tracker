@@ -1,0 +1,152 @@
+.nutrition-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    margin-top: 20px; /* Move towards the top but not at the very top */
+}
+
+.main-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    margin-top: 20px;
+    flex-wrap: wrap; /* Ensure the content wraps if the screen is too narrow */
+}
+
+.goal-setter-container, .log-meal-container, .meal-journal-container {
+    text-align: center;
+    background-color: #f4f4f4;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    border: none; /* Ensure there's no border */
+}
+
+.log-meal-button, .meal-journal-button, .goal-setter-button {
+    padding: 10px 20px;
+    font-size: 16px;
+    color: white;
+    background-color: #6200EA;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.log-meal-button:hover, .meal-journal-button:hover, .goal-setter-button:hover {
+    background-color: #5a00d2;
+}
+
+.add-meal-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 20px;
+}
+
+.add-meal-form > input, .add-meal-form > select {
+    padding: 8px;
+    margin: 5px;
+}
+
+.submit-meal-button {
+    padding: 10px 15px;
+    background-color: #4CAF50; /* Green background */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    margin: auto;
+    width: 50%; /* Button width adjusted to be less than inputs for stylistic preference */
+}
+
+.submit-meal-button:hover {
+    background-color: #45a049; /* Darker green on hover */
+}
+
+.meal-entries > div {
+    border-bottom: 1px solid #eee;
+    padding: 10px 0;
+    margin: auto; /* Center align the entries */
+    width: 90%; /* Reduce the width to fit the container */
+}
+
+.meal-details {
+    padding: 10px;
+    margin-top: 10px;
+    background: #f0f0f0;
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Center align the details */
+    width: 100%; /* Adjust width as needed */
+}
+
+.meal-entry h3 {
+    text-align: center;
+}
+
+.view-details-button {
+    padding: 5px 10px;
+    margin-top: 10px;
+    background-color: #6200EA;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    align-self: center; /* Center the button */
+}
+
+.view-details-button:hover {
+    background-color: #5a00d2;
+}
+
+.modal-content {
+    width: 90%;
+    max-width: 600px;
+}
+
+.today-meals-container {
+    display: flex;
+    justify-content: space-around;
+    width: 100%;
+    margin-top: 20px;
+}
+
+.meal-box {
+    background-color: #f4f4f4;
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    text-align: center;
+    width: 15%;
+}
+
+/* Smaller boxes for weekly display */
+.meal-box {
+    width: 15%;
+}
+
+.delete-meal-button {
+    background-color: #FF0000;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-left: 10px;
+}
+
+.delete-meal-button:hover {
+    background-color: #CC0000;
+}
+
+.charts-container {
+    display: flex;
+    justify-content: space-around;
+    width: 100%;
+    margin-top: 20px;
+}
