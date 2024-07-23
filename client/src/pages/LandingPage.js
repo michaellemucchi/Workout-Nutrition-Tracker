@@ -12,11 +12,32 @@ import key from '../images/key.png';
 
 
 const features = [
-  { id: 1, title: "Nutrition", description: "Description for Feature 1", image: nutrition },
-  { id: 2, title: "Workouts", description: "Description for Feature 2", image: exercise },
-  { id: 3, title: "Charts", description: "Description for Feature 3", image: analytics },
-  { id: 4, title: "Login Authentication", description: "Description for Feature 4", image: key }
+  { 
+    id: 1, 
+    title: "Nutrition", 
+    description: "Track your daily meals and monitor your calorie intake. Log breakfast, lunch, dinner, snacks, and desserts, and get detailed nutritional breakdowns to stay on top of your dietary goals.", 
+    image: nutrition 
+  },
+  { 
+    id: 2, 
+    title: "Workouts", 
+    description: "Log your workouts and track your fitness progress. Record different exercises, sets, and reps, and visualize your progress over time with detailed workout logs.", 
+    image: exercise 
+  },
+  { 
+    id: 3, 
+    title: "Charts", 
+    description: "Visualize your nutrition and workout data with comprehensive charts. Analyze your calorie intake, nutrient distribution, and exercise performance to make informed decisions about your fitness journey.", 
+    image: analytics 
+  },
+  { 
+    id: 4, 
+    title: "Login Authentication", 
+    description: "Securely log in to access your personalized workout and nutrition data. Our robust authentication system ensures that your information is safe and accessible only to you.", 
+    image: key 
+  }
 ];
+
 
 
 const LandingPage = () => {
