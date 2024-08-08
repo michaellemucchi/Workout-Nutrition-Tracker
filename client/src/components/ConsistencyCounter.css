@@ -1,0 +1,25 @@
+.consistency-counter {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    padding: 1rem;
+    text-align: center;
+    width: 100%;
+}
+
+.info-button {
+    background-color: #6200EA;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 5px 10px;
+    cursor: pointer;
+}
+
+.info-popup {
+    margin-top: 10px;
+    background: #f4f4f4;
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}

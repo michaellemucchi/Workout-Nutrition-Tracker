@@ -33,10 +33,10 @@ const GoalSetter = () => {
             setFitnessGoal('Failed to fetch');
         }
     }, [user.token]);
-    
+
     useEffect(() => {
         fetchGoals();
-    }, [fetchGoals]); 
+    }, [fetchGoals]);
 
     const updateGoals = async () => {
         try {

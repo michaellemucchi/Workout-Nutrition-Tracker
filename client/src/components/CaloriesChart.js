@@ -1,45 +1,40 @@
-import React from 'react';
-import { Doughnut } from 'react-chartjs-2';
-import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
-import './CaloriesChart.css';
+import React, { useEffect, useState } from 'react';
+import { Chart } from 'react-google-charts';
 
-ChartJS.register(ArcElement, Tooltip, Legend);
+const CaloriesChart = ({ totalCalories, goalCalories }) => {
+    const [chartData, setChartData] = useState([
+        ['Calories', 'Amount'],
+        ['Consumed', totalCalories],
+        ['Remaining', Math.max(0, goalCalories - totalCalories)]
+    ]);
 
-const CalorieChart = ({ totalCalories, goalCalories }) => {
-    const percentage = Math.min((totalCalories / goalCalories) * 100, 100);
-    const data = {
-        labels: ['Consumed', 'Remaining'],
-        datasets: [
-            {
-                data: [totalCalories, Math.max(goalCalories - totalCalories, 0)],
-                backgroundColor: ['#4CAF50', '#E0E0E0'],
-                hoverBackgroundColor: ['#45a049', '#D5D5D5'],
-                borderWidth: 1,
-            },
-        ],
-    };
-
-    const options = {
-        cutout: '70%',
-        plugins: {
-            tooltip: {
-                enabled: false,
-            },
-            legend: {
-                display: false,
-            },
-        },
-    };
+    useEffect(() => {
+        setChartData([
+            ['Calories', 'Amount'],
+            ['Consumed', totalCalories],
+            ['Remaining', Math.max(0, goalCalories - totalCalories)]
+        ]);
+    }, [totalCalories, goalCalories]);
 
     return (
-        <div className="calorie-chart-container">
-            <Doughnut data={data} options={options} />
-            <div className="calorie-chart-text">
-                <div className="calorie-percentage">{percentage.toFixed(2)}%</div>
-                <div className="calorie-count">{totalCalories} / {goalCalories} cal</div>
-            </div>
+        <div className="calories-chart-container">
+            <Chart
+                chartType="PieChart"
+                data={chartData}
+                options={{
+                    title: 'Calorie Consumption',
+                    pieHole: 0.4,
+                    slices: [
+                        { color: '#8ad1c2' },
+                        { color: '#e1e1e1' }
+                    ],
+                    chartArea: { width: '90%', height: '75%' }, // Adjust the chart size
+                }}
+                width="100%"
+                height="200px"
+            />
         </div>
     );
 };
 
-export default CalorieChart;
+export default CaloriesChart;

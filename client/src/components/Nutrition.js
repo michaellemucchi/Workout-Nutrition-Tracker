@@ -4,6 +4,7 @@ import { useUser } from '../context/UserContext';
 import GoalSetter from './GoalSetter';
 import CaloriesChart from './CaloriesChart';
 import NutrientChart from './NutrientChart';
+import ConsistencyCounter from './ConsistencyCounter';
 import "./Nutrition.css";
 
 const Nutrition = () => {
@@ -21,6 +22,7 @@ const Nutrition = () => {
         carbs: '',
         fats: ''
     });
+    const [goalCalories, setGoalCalories] = useState(2000); // Dynamically set based on user goals
 
     const fetchMeals = useCallback(async () => {
         try {
@@ -36,8 +38,8 @@ const Nutrition = () => {
                 ...meal,
                 date_logged: new Date(meal.date_logged).toLocaleDateString('en-US', {
                     timeZone: 'America/Los_Angeles',
-                    month: 'long', 
-                    day: 'numeric', 
+                    month: 'long',
+                    day: 'numeric',
                     year: 'numeric'
                 })
             })));
@@ -67,6 +69,26 @@ const Nutrition = () => {
         fetchTodayMeals();
     }, [fetchMeals, fetchTodayMeals]);
 
+    const fetchGoalCalories = useCallback(async () => {
+        try {
+            const response = await fetch('http://localhost:3000/api/users/GetCalorieGoal', {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${user.token}`,
+                }
+            });
+            if (!response.ok) throw new Error('Failed to fetch calorie goal');
+            const data = await response.json();
+            setGoalCalories(data.calorieGoal);
+        } catch (error) {
+            console.error('Error fetching calorie goal:', error);
+        }
+    }, [user.token]);
+
+    useEffect(() => {
+        fetchGoalCalories();
+    }, [fetchGoalCalories]);
+
     const handleAddMealChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
 
     const handleAddMealSubmit = async (e) => {
@@ -85,8 +107,8 @@ const Nutrition = () => {
             if (!response.ok) throw new Error('Failed to add meal');
             await response.json();
             setShowAddMealModal(false);
-            fetchMeals(); // Refetch meals upon adding a new meal
-            fetchTodayMeals(); // Refetch today's meals upon adding a new meal
+            fetchMeals();
+            fetchTodayMeals();
         } catch (error) {
             console.error('Error adding meal:', error);
         }
@@ -147,7 +169,6 @@ const Nutrition = () => {
     const totalProtein = todayMeals.reduce((total, meal) => total + meal.protein, 0);
     const totalCarbs = todayMeals.reduce((total, meal) => total + meal.carbs, 0);
     const totalFats = todayMeals.reduce((total, meal) => total + meal.fats, 0);
-    const goalCalories = 2000; // This should be dynamically set based on user goals
 
     return (
         <div className="nutrition-container">
@@ -168,8 +189,15 @@ const Nutrition = () => {
                 {renderTodayMeals()}
             </div>
             <div className="charts-container">
-                <CaloriesChart totalCalories={totalCalories} goalCalories={goalCalories} />
-                <NutrientChart protein={totalProtein} carbs={totalCarbs} fats={totalFats} />
+                <div className="calories-chart-container">
+                    <CaloriesChart totalCalories={totalCalories} goalCalories={goalCalories} />
+                </div>
+                <div className="nutrient-chart-container">
+                    <NutrientChart protein={totalProtein} carbs={totalCarbs} fats={totalFats} />
+                </div>
+            </div>
+            <div className="consistency-counter-container">
+                <ConsistencyCounter meals={todayMeals} />
             </div>
             {showAddMealModal && (
                 <Modal onClose={() => setShowAddMealModal(false)}>
@@ -196,7 +224,7 @@ const Nutrition = () => {
                 </Modal>
             )}
             {showJournalModal && (
-                <Modal onClose={() => setShowJournalModal(false)}>
+                <Modal onClose={() => setShowJournalModal(false)} size="large">
                     <div className="meal-entries modal-content">
                         {meals.map((meal, index) => (
                             <div key={index} className="meal-entry">
@@ -211,7 +239,7 @@ const Nutrition = () => {
                                                 const [mealId, mealDetail] = detail.split(',', 2);
                                                 return (
                                                     <p key={idx}>
-                                                        {mealDetail} 
+                                                        {mealDetail}
                                                         <button
                                                             className="delete-meal-button"
                                                             onClick={() => handleDeleteMeal(mealId)}

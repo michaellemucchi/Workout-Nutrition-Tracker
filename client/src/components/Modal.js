@@ -1,18 +1,20 @@
 import React from 'react';
+import './Modal.css';
 
-const Modal = ({ onClose, children }) => {
+const Modal = ({ onClose, children, size }) => {
     const handleBackdropClick = (event) => {
-        // Close modal when clicking outside the modal content
         if (event.currentTarget === event.target) {
             onClose();
         }
     };
 
+    const modalSize = size === 'large' ? 'modal-content-large' : 'modal-content';
+
     return (
         <div className="modal-backdrop" onClick={handleBackdropClick}>
-            <div className="modal-content" >
+            <div className={modalSize}>
                 <button className="close-button" onClick={onClose}>Close</button>
-                {children} 
+                {children}
             </div>
         </div>
     );
