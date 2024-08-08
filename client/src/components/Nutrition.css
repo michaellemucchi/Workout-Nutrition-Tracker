@@ -152,19 +152,16 @@
     position: relative;
 }
 
-.calories-chart-container {
-    width: 40%; /* Adjust the width to fit properly */
-    margin-right: 20px;
-}
+
 
 .nutrient-chart-container {
-    width: 40%; /* Adjust the width to fit properly */
+    transform: translate(-60px);
 }
 
 .consistency-counter-container {
     position: absolute;
     bottom: 80px; /* Adjust to move it up */
-    right: 40px; /* Adjust to move it to the left */
+    right: 60px; /* Adjust to move it to the left */
     width: 20%;
 }
 
