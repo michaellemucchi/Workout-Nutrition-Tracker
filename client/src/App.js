@@ -9,6 +9,8 @@ import Nutrition from './components/Nutrition';
 import Workouts from './components/Workouts';   
 import Profile from './components/Profile';    
 import MainDash from './components/MainDash';
+import About from './pages/About';
+import Contact from './pages/Contact';
 
 function App() {
   return (
@@ -16,6 +18,8 @@ function App() {
       <Router>
         <Routes>
           <Route exact path="/" element={<LandingPage/>} />
+          <Route exact path="/about" element={<About />} />
+          <Route exact path="/contact" element={<Contact />} />
           <Route exact path="/register" element={<Register />} />
           <Route exact path="/login" element={<Login />} />
           <Route path="/dashboard" element={<Dashboard />}>
