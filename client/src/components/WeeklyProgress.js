@@ -2,7 +2,7 @@ import React from 'react';
 import { startOfWeek, endOfWeek, eachDayOfInterval, format, isFuture, isToday, isPast } from 'date-fns';
 import './WeeklyProgress.css'; 
 
-const WeeklyProgress = ({ workouts }) => {
+const WeeklyProgress = ({ workouts = [] }) => {  // Added default value for workouts
     const start = startOfWeek(new Date(), { weekStartsOn: 0 });
     const end = endOfWeek(new Date(), { weekStartsOn: 0 });
     const days = eachDayOfInterval({ start, end });

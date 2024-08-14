@@ -10,18 +10,22 @@ const ConsistencyCounter = ({ meals }) => {
 
     useEffect(() => {
         const checkConsistency = async () => {
-            const response = await fetch('http://localhost:3000/api/workouts/WorkoutsToday', {
-                method: 'GET',
-                headers: {
-                    'Authorization': `Bearer ${user.token}`,
-                }
-            });
+            try {
+                const response = await fetch('http://localhost:3000/api/workouts/WorkoutsToday', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${user.token}`,
+                    }
+                });
 
-            const workouts = await response.json();
-            if (meals.length > 0 && workouts.length > 0) {
-                setConsistencyCount(prevCount => prevCount + 1);
-            } else {
-                setConsistencyCount(0);
+                const workouts = await response.json();
+                if (meals.length > 0 && workouts.length > 0) {
+                    setConsistencyCount(prevCount => prevCount + 1);
+                } else {
+                    setConsistencyCount(0);
+                }
+            } catch (error) {
+                console.error("Failed to fetch workouts", error);
             }
         };
 

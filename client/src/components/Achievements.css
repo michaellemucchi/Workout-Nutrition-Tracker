@@ -1,0 +1,17 @@
+.achievements {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.achievements button {
+    background-color: #6200EA;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.achievements button:hover {
+    background-color: #5A00D1;
+}

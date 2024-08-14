@@ -1,0 +1,44 @@
+.dashboard-container {
+    padding: 20px;
+    color: #333;
+}
+
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto;
+    gap: 20px;
+}
+
+.dashboard-item {
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+}
+
+.consistency-counter {
+    text-align: center;
+}
+
+.calories-chart-container {
+    text-align: center;
+}
+
+.weekly-checker {
+    text-align: center;
+}
+
+.achievements-container {
+    text-align: center;
+    padding-bottom: 10px;
+}
+
+.achievements-container .achievements-button {
+    background-color: #6200EA;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    cursor: pointer;
+}

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Chart } from 'react-google-charts';
+import './CaloriesChart.css';
 
 const CaloriesChart = ({ totalCalories, goalCalories }) => {
     const [chartData, setChartData] = useState([
@@ -28,7 +29,7 @@ const CaloriesChart = ({ totalCalories, goalCalories }) => {
                         { color: '#8ad1c2' },
                         { color: '#e1e1e1' }
                     ],
-                    chartArea: { width: '90%', height: '75%' }, // Adjust the chart size
+                    chartArea: { width: '90%', height: '75%' },
                 }}
                 width="100%"
                 height="200px"
