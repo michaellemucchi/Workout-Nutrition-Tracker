@@ -1,44 +1,96 @@
-.dashboard-container {
+.dashboard {
     padding: 20px;
-    color: #333;
 }
 
 .dashboard-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: auto;
-    gap: 20px;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px; /* Reduced gap to save space */
 }
 
 .dashboard-item {
     background-color: white;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    padding: 20px;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 
-.consistency-counter {
+.profile-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    background-color: #f5f5f5;
+    border-radius: 10px;
+    margin: 5px;
+}
+
+.profile-photo {
+    width: 160px;
+    height: 160px;
+    border-radius: 50%;
+    margin-bottom: 10px;
+    object-fit: cover;
+    border: 2px solid #ccc;
+}
+
+.consistency-item {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 10px 15px;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    height: 120px;
+    width: 260px; /* Slightly reduced width */
+}
+
+.weekly-item, .achievements-item, .add-friend-item {
     text-align: center;
 }
 
-.calories-chart-container {
-    text-align: center;
+.calorie-item, .consistency-item, .weekly-item, .achievements-item, .add-friend-item {
+    padding: 10px 15px;
 }
 
-.weekly-checker {
-    text-align: center;
+.achievements-item, .add-friend-item {
+    padding: 8px 10px;
+    height: 100px;
+    width: 260px; /* Reduced width for better fit */
 }
 
-.achievements-container {
-    text-align: center;
-    padding-bottom: 10px;
+.add-friend-item form {
+    display: flex;
+    gap: 10px;
+    padding-top: 15px;
 }
 
-.achievements-container .achievements-button {
+.add-friend-item input {
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    flex-grow: 1;
+}
+
+.add-friend-item button {
+    padding: 10px 20px;
     background-color: #6200EA;
     color: white;
     border: none;
     border-radius: 5px;
-    padding: 10px 20px;
     cursor: pointer;
+}
+
+.add-friend-item button:hover {
+    background-color: #5A00D1;
+}
+
+h3, h4 {
+    margin: 0;
 }

@@ -24,6 +24,23 @@ router.post('/AddWorkout', authenticate, async (req, res) => {
   }
 });
 
+// Get today's workouts
+router.get('/WorkoutsToday', authenticate, async (req, res) => {
+  const userId = req.user.id;
+  const today = new Date().toISOString().split('T')[0]; // Get today's date in 'YYYY-MM-DD' format
+
+  try {
+    const workoutsToday = await allAsync(`
+      SELECT * 
+      FROM workouts 
+      WHERE user_id = ? 
+      AND date_logged LIKE ?`, [userId, `${today}%`]);
+
+    res.status(200).json(workoutsToday);
+  } catch (error) {
+    res.status(500).send({ error: 'Failed to retrieve today\'s workouts. Please try again later.', details: error.message });
+  }
+});
 
 
 //get all workouts

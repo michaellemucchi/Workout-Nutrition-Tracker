@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import Modal from './Modal'; // Import the Modal component
+import Modal from './Modal';
 import './ConsistencyCounter.css';
 import { useUser } from '../context/UserContext';
 
@@ -35,7 +35,7 @@ const ConsistencyCounter = ({ meals }) => {
     return (
         <div className="consistency-counter">
             <h4>Consistency Counter</h4>
-            <p>{consistencyCount} days</p>
+            <p>{consistencyCount} {consistencyCount === 1 ? 'day' : 'days'}</p>
             <button className="info-button" onClick={() => setShowInfoModal(true)}>Info</button>
             {showInfoModal && (
                 <Modal onClose={() => setShowInfoModal(false)}>
