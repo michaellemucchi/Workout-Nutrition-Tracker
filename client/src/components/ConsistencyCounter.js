@@ -9,28 +9,29 @@ const ConsistencyCounter = ({ meals }) => {
     const [showInfoModal, setShowInfoModal] = useState(false);
 
     useEffect(() => {
-        const checkConsistency = async () => {
+        const fetchConsistency = async () => {
             try {
-                const response = await fetch('http://localhost:3000/api/workouts/WorkoutsToday', {
+                const response = await fetch('http://localhost:3000/api/workouts/consistency', {
                     method: 'GET',
                     headers: {
                         'Authorization': `Bearer ${user.token}`,
                     }
                 });
-
-                const workouts = await response.json();
-                if (meals.length > 0 && workouts.length > 0) {
-                    setConsistencyCount(prevCount => prevCount + 1);
+    
+                const data = await response.json();
+                if (response.ok) {
+                    setConsistencyCount(data.consistencyStreak);  // Set streak directly from server response
                 } else {
-                    setConsistencyCount(0);
+                    console.error("Failed to fetch consistency streak");
                 }
             } catch (error) {
-                console.error("Failed to fetch workouts", error);
+                console.error("Error fetching consistency streak:", error);
             }
         };
-
-        checkConsistency();
-    }, [meals, user.token]);
+    
+        fetchConsistency();
+    }, [meals, user.token]);  // Update whenever meals change or token changes
+    
 
     return (
         <div className="consistency-counter">

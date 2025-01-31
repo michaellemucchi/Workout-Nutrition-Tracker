@@ -11,12 +11,18 @@ const MonthlyProgress = ({ workouts }) => {
         const start = startOfMonth(new Date());
         const end = endOfMonth(new Date());
         const daysInterval = eachDayOfInterval({ start, end });
-        setDays(daysInterval.map(day => ({
-            date: day,
-            workoutStatus: workouts.find(w => new Date(w.date_logged).toDateString() === day.toDateString()) ? 'done' : isPast(day) && !isToday(day) ? 'missed' : 'upcoming'
-        })));
+    
+        setDays(daysInterval.map(day => {
+            const dayISO = day.toISOString().split('T')[0];  // Convert day to ISO date without time
+            const hasWorkout = workouts.some(w => new Date(w.date_logged).toISOString().split('T')[0] === dayISO);
+    
+            return {
+                date: day,
+                workoutStatus: hasWorkout ? 'done' : isPast(day) && !isToday(day) ? 'missed' : 'upcoming'
+            };
+        }));
     }, [workouts]);
-
+    
     return (
         <div className="calendar">
             <h2>{format(new Date(), 'MMMM yyyy')}</h2>

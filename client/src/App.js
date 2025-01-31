@@ -5,9 +5,9 @@ import LandingPage from './pages/LandingPage';
 import Register from './pages/Register';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
-import Nutrition from './components/Nutrition';  
-import Workouts from './components/Workouts';   
-import Profile from './components/Profile';    
+import Nutrition from './components/Nutrition';
+import Workouts from './components/Workouts';
+import Profile from './components/Profile';
 import MainDash from './components/MainDash';
 import About from './pages/About';
 import Contact from './pages/Contact';
@@ -17,11 +17,13 @@ function App() {
     <UserProvider>
       <Router>
         <Routes>
-          <Route exact path="/" element={<LandingPage/>} />
-          <Route exact path="/about" element={<About />} />
-          <Route exact path="/contact" element={<Contact />} />
-          <Route exact path="/register" element={<Register />} />
-          <Route exact path="/login" element={<Login />} />
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/login" element={<Login />} />
+
+          {/* Dashboard nested routes */}
           <Route path="/dashboard" element={<Dashboard />}>
             <Route index element={<MainDash />} />
             <Route path="nutrition" element={<Nutrition />} />

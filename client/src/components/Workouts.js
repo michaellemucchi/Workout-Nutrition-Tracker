@@ -123,16 +123,16 @@ const Workouts = () => {
                         <ul>
                             {workouts.map(workout => (
                                 <li key={workout.id}>
-                                    Date: {workout.date_logged} - Categories: {workout.categories.join(', ')}
+                                    Date: {new Date(workout.date_logged).toLocaleDateString('en-US')} - Categories: {workout.categories.join(', ')}
                                     <button onClick={() => setVisibleWorkoutId(visibleWorkoutId === workout.id ? null : workout.id)}>
                                         {visibleWorkoutId === workout.id ? 'Hide Details' : 'Show Details'}
                                     </button>
                                     <button onClick={() => confirmDelete(workout.id)}>Delete</button>
-                                    {visibleWorkoutId === workout.id && (
+                                    {visibleWorkoutId === workout.id && workout.exercises?.length > 0 && (
                                         <ul>
                                             {workout.exercises.map((exercise, index) => (
                                                 <li key={index}>
-                                                    {exercise} - {workout.sets[index]} sets x {workout.reps[index]} reps x {workout.weights[index]} lbs
+                                                    {exercise.name} - {exercise.sets} sets x {exercise.reps} reps x {exercise.weight} lbs
                                                 </li>
                                             ))}
                                         </ul>
@@ -140,6 +140,7 @@ const Workouts = () => {
                                 </li>
                             ))}
                         </ul>
+
                     </div>
                 </Modal>
             )}

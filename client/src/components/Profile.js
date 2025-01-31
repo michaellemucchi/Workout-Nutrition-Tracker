@@ -13,6 +13,8 @@ const Profile = () => {
     const [activeTab, setActiveTab] = useState('details');
     const [oldPassword, setOldPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
+    const [cacheBuster, setCacheBuster] = useState('');
+
 
     useEffect(() => {
         const fetchProfile = async () => {
@@ -42,9 +44,9 @@ const Profile = () => {
         const file = event.target.files[0];
         if (!file) return;
 
-        const allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
+        const allowedTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/jpg'];
         if (!allowedTypes.includes(file.type)) {
-            alert('Only JPEG, PNG, and GIF files are allowed.');
+            alert('Only JPEG, JPG, PNG, and GIF files are allowed.');
             return;
         }
 
@@ -77,6 +79,12 @@ const Profile = () => {
                     ...prevState,
                     profilePicture: result.profilePicture
                 }));
+                // Update cache-buster to force image reload
+                setCacheBuster(`?t=${new Date().getTime()}`);
+
+                // Clear file input
+                setFile(null);
+                document.getElementById('file-input').value = '';
             } else {
                 throw new Error('Failed to upload image');
             }
@@ -108,13 +116,17 @@ const Profile = () => {
     };
 
     const renderContent = () => {
+        const formattedDOB = profile?.date_of_birth 
+            ? new Date(profile.date_of_birth).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) 
+            : 'N/A';
+    
         switch (activeTab) {
             case 'details':
                 return (
                     <>
                         <p>Bio: {profile?.bio}</p>
                         <p>Fitness Goals: {profile?.fitness_goals}</p>
-                        <p>Date of Birth: {profile?.date_of_birth}</p>
+                        <p>Date of Birth: {formattedDOB}</p>
                     </>
                 );
             case 'change':
@@ -135,14 +147,19 @@ const Profile = () => {
                 return null;
         }
     };
-
+    
     if (loading) return <Loader />;
     if (error) return <div>Error: {error}</div>;
 
     return (
         <div className="profile-container">
             <div className="profile-sidebar">
-                <img src={profile?.profilePicture ? `${profile.profilePicture}?${new Date().getTime()}` : person} alt="Profile" className="profile-pic" />
+            <img 
+    key={cacheBuster}
+    src={profile?.profilePicture ? `${profile.profilePicture}${cacheBuster}` : person} 
+    alt="Profile" 
+    className="profile-pic" 
+/>
                 <label htmlFor="file-input" className="upload-button">Select Profile Picture</label>
                 <input type="file" onChange={handleFileChange} style={{ display: 'none' }} id="file-input" />
                 {file && (
